@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>数据链路层&nbsp;|&nbsp;夕的博客</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="数据链路层">
+  
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+    <h1 class="Header__Title">数据链路层</h1>
+    
+  </header>
+  <article id="https://www.notion.so/21814cb428284f0cae9fa03647ce61cb" class="PageRoot"><h2 id="https://www.notion.so/4b4d17b2e27748abbf9904d5738542f4" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/4b4d17b2e27748abbf9904d5738542f4"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">链路层</span></span></h2><div id="https://www.notion.so/71edbd0274b9415694266a621404585c" class="Image Image--PageWidth"><figure><a href="#"><img src="#" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/96fae8c436bb42a39766fd2cbeaf1430" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">如上图所示，链路层主要有三个目的：</strong></span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/a19bb1d941ff4f988fc7c68ce494b372" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">为IP模块发送和接收数据报</span></span></li><li id="https://www.notion.so/68a7c0eb462a41a196a5f8830a62e0d7" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">为ARP模块发送ARP请求和接收ARP应答</span></span></li><li id="https://www.notion.so/8ce474c7a3684335af729516414f1a67" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">为RARP发送RARP请求和接收RARP应答（RARP现在已经淘汰不用了）</span></span></li></ol><div id="https://www.notion.so/841922293ad84460b7a373ec4b531337" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">链路层的三个基本问题：</strong></span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/e6a82aa556dd4fe6b5b71aea9fe76cdb" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">封装成帧</strong></span><span class="SemanticString"> ：将网络层传下来的数据分组添加首部和尾部，用于标记帧的开始和结束。每一种链路层协议都规定了所能传送 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">帧的数据部分</strong></span><span class="SemanticString"> 长度上限----最大传输单元 MTU。</span></span></li></ol><blockquote id="https://www.notion.so/aa6c2ef36c11435381d7a2ff8b459a10" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">以太网（Ethernet）协议：1500字节
+Point-to-Point：4470字节
+PPPoE（ADSL）协议：1492字节
+X.25协议（Dial Up/Modem）：576字节
+FDDI协议：4352字节</span></span></blockquote><ol class="NumberedListWrapper"><li id="https://www.notion.so/3233cc60c8b147fa902504eade9a372b" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">透明传输</strong></span><span class="SemanticString"> ：帧使用首部和尾部进行定界，如果帧的数据部分含有和首部尾部相同的内容，那么帧开始结束的地方就会错误地被判定。（在数据部分出现首部尾部相同的内容前面加上转义字符（“ESC”，16进制编码是 1B，二进制是 00011011）。如果数据部分出现转义字符，那就在转义字符前面再加上一个转义字符。接受端进行处理后可以还原出原始数据。这个过程透明传输的内容是转义字符，用户察觉不到转义字符的存在）</span></span></li><li id="https://www.notion.so/2b63750142784f718aeb4863eded3eec" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">差错检测</strong></span><span class="SemanticString"> ：目前链路层广泛使用了循环冗余校验（CRC）来检查比特差错。</span></span></li></ol><div id="https://www.notion.so/a29f633557b84242956fe0d8e9284861" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">MAC地址</strong></span></span></p></div><div id="https://www.notion.so/ad074aad52b44e8c87f19f249bfadcfd" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在局域网中，硬件地址又叫做物理地址或MAC地址（因为这种地址在MAC帧中使用）</span></span></p></div><div id="https://www.notion.so/04ab2f9d472944a49859a2ac23a43fb3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">MAC地址长48比特（6个字节），在使用网卡（NIC）时，MAC地址一般会烧入到ROM（只读存储器（Read-Only Memory））中。</span></span></p></div><h2 id="https://www.notion.so/193267c66d554b70ab6b63d6751af83f" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/193267c66d554b70ab6b63d6751af83f"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">PPP协议</span></span></h2><h3 id="https://www.notion.so/4c9caf60055147cb9747cd297c52dc93" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/4c9caf60055147cb9747cd297c52dc93"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">定义</span></span></h3><div id="https://www.notion.so/ccd2b82b0c75489f9a091161975a9f08" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">PPP（Point-to-Point Protocol）是指点对点，即1对1连接计算机的协议。</span></span></p></div><h3 id="https://www.notion.so/5c00a72895ec4f9aa7eeed219fa0a830" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/5c00a72895ec4f9aa7eeed219fa0a830"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">LCP 与 NCP</span></span></h3><div id="https://www.notion.so/a38cd717a73a4881ab73a04f4313f23c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">PPP主要功能中包括两个协议：一个是不依赖上层的LCP协议（Link Control Protocol），一个是依赖上层的NCP协议（Network Control Protocol）。如果上层为IP，此时NCP也叫作IPCP（IP Control Protocol）。</span></span></p></div><div id="https://www.notion.so/b10d3e86c8f64d5aab6f3f450af83a86" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">LCP主要负责建立和断开连接，设置最大接收单元（MRU）、设置验证协议（PAP或CHAP）以及设置是否进行通信质量的监控。而IPCP负责IP地址设置以及是否进行TCP/IP首部压缩等。</span></span></p></div><h3 id="https://www.notion.so/46b558b139174d8aa72bd6bdae1d276d" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/46b558b139174d8aa72bd6bdae1d276d"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">PPP帧格式</span></span></h3><div id="https://www.notion.so/3abbcb8b9aa04bba83c2fef692dfb8cc" class="Image Image--PageWidth"><figure><a href="#"><img src="#" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/bfdc8e715fd44ef1a7b9f900694de647" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">0x0021：IP数据报
+0xc021：链路控制数据 (LCP)
+0x8021：网络控制数据 (NCP)</span></span></p></div><div id="https://www.notion.so/c9077baa5e9a4e14ad0f3b0ddd24b26e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"></span></p></div></article>
+  <footer class="Footer">
+  <div>&copy; 夕的博客 2022</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>

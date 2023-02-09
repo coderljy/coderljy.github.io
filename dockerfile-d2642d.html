@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>Dockerfile基础指令&nbsp;|&nbsp;夕的博客</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="Dockerfile基础指令">
+  
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+    <h1 class="Header__Title">Dockerfile基础指令</h1>
+    
+  </header>
+  <article id="https://www.notion.so/d2642dfae0fe4557ab220acd34d29dfd" class="PageRoot"><h2 id="https://www.notion.so/388ba14c000d46fc8b9aad266bfb2b89" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/388ba14c000d46fc8b9aad266bfb2b89"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">一、Dockerfile简介</span></span></h2><div id="https://www.notion.so/f3edae46629d45de9312487358c61bb5" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Dockfile是一种被Docker程序解释的脚本，Dockerfile由一条一条的指令组成，每条指令对应Linux下面的一条命令，Docker程序将这些Dockerfile指令翻译真正的Linux命令；Dockerfile有自己书写格式和支持的命令，Docker程序解决这些命令间的依赖关系，类似于Makefile，Docker程序将读取Dockerfile，根据指令生成定制的image。</span></span></p></div><div id="https://www.notion.so/a6f84fb953354ac3abf0b92c0b7f5351" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Dockerfile的指令是忽略大小写的，建议使用大写，使用#作为注释，每一行只支持一条指令，每条指令可以携带多个参数。</span></span></p></div><div id="https://www.notion.so/64c06eb32f8f4f069f778a6e12d7cc18" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Dockerfile 是一个文本文件，其内包含了一条条的指令(Instruction)，每一条指令构建一层， 因此每一条指令的内容，就是描述该层应当如何构建。</span></span></p></div><h2 id="https://www.notion.so/d87c85c87d824779a3b3eb0b4081b5f3" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/d87c85c87d824779a3b3eb0b4081b5f3"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">二、dockerfile指令详解</span></span></h2><div id="https://www.notion.so/de1a68b7422e41299b56bde3b8b0b294" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. FROM</strong></span></span></p></div><div id="https://www.notion.so/fd2b8c45bec04c00860e59057de1f537" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">功能为指定基础镜像，并且必须是第一条指令。</span></span></p></div><div id="https://www.notion.so/c7c9e89d966c40abbad3ea6553aee7be" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">除了选择现有镜像为基础镜像外，Docker 还存在一个特殊的镜像，名为scratch。这个镜像 是虚拟的概念，并不实际存在，它表示一个空白的镜像。</span><span class="SemanticString">
+如果你以scratch为基础镜像的话，意味着你不以任何镜像为基础，接下来所写的指令将作为镜像第一层开始构建。</span></span></p></div><div id="https://www.notion.so/ad98bde122a449f3aa6daa7ca1092671" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">不以任何系统为基础，直接将可执行文件复制进镜像的做法并不罕见，比如swarm、coreos/etcd 。对于Linux 下静态编译的程序来说，并不需要有操作系统提供运行时支持，所需的一切库都已经在可执行文件里了，因此直接 FROM scratch 会让镜像体积更加小 巧。使用Go语言开发的应用很多会使用这种方式来制作镜像，这也是为什么有人认为 Go 是特别适合容器微服务架构的语言的原因之一。</span></span></p></div><div id="https://www.notion.so/d990c1090b054a83988beb722e59a38f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. MAINTAINER</strong></span></span></p></div><div id="https://www.notion.so/cedc6c6f42f845639e316894a3707a05" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">格式为 MAINTAINER &lt;name&gt;，指定维护者信息。</span></span></p></div><div id="https://www.notion.so/bf3cf9a1cf2c4ae9866d7e249ec78c89" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">3. RUN</strong></span></span></p></div><div id="https://www.notion.so/e1c21247a86d4ee7b19557664ccfed33" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">用来执行命令行命令</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/49beeec838504ad8a0c0181b0bdc3e46" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">shell格式：RUN &lt;命令&gt; ，就像直接在命令行中输入的命令一样</span></span></li><li id="https://www.notion.so/830acfe84ca14ae9a9dc05715ee6767e" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">exec格式：RUN [&quot;可执行文件&quot;, &quot;参数1&quot;, &quot;参数2&quot;]，这更像是函数调用中的格式</span></span></li></ul><div id="https://www.notion.so/3fcdbc37a3de4da5bccd00101e5629f4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">使用 &amp;&amp; 符连接多个命令； \ 符进行换行。</span></span></p></div><div id="https://www.notion.so/4a06a0b2174c431dab2a3bde9dacd0bc" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">为防止镜像臃肿，一定要确保每一层只添加真正需要添加的东西，任何无关的东西都应该清理掉（编译构建所需要的软件，所有下载、展开的文件，apt缓存文件等）。</span></span></p></div><div id="https://www.notion.so/b68abd6c2a614d6d898873ebb70ea09c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">4. CMD</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/32d4031a57cc4d67a2030aca4b37aa21" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">shell格式：CMD &lt;命令&gt;</span></span></li><li id="https://www.notion.so/902dda9e341a4386a7f58f1fe7600574" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">exec 格式：CMD [&quot;可执行文件&quot;, &quot;参数1&quot;, &quot;参数2&quot;...]</span></span></li><li id="https://www.notion.so/290c946afce04cee8b8c5620d8fd4735" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">参数列表格式：CMD [&quot;参数1&quot;, &quot;参数2&quot;...]，提供给 ENTRYPOINT 的默认参数</span></span></li></ul><div id="https://www.notion.so/ab1e4e9f4f36489393d7417f98e8fd1d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">指定启动容器时执行的命令，每个 Dockerfile 只能有一条 CMD 命令。如果指定了多条命令，只有最后一条会被执行。</span></span></p></div><div id="https://www.notion.so/27a08cf4cd1e4a09b3d3066db2531c77" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果用户启动容器时候指定了运行的命令，则会覆盖掉 CMD 指定的命令。</span></span></p></div><div id="https://www.notion.so/265d5c03f6d149cb80bd087daba33299" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Docker不是虚拟机，容器中的应用都应该以前台执行，而不是像虚拟机、物理机里面那样，用upstart/systemd去启动后台服务，容器内没有后台服务的概念。</span></span></p></div><div id="https://www.notion.so/c6081b756595451596276e8faed527e4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">CMD service nginx start ，如果这样写会出现容器执行后立即退出了，这主要是因为没搞明白前台和后台的概念，没有区分容器和虚拟机的差异，对于容器而言，其启动程序就是容器应用进程，容器就是为了主进程而存在的，主进程退出，容器就失去了存在的意义，进而退出，其他辅助进程不是他关心的内容。 上述命令可以理解为 CMD[ &quot;sh&quot;, &quot;-c&quot;, &quot;service nginx start&quot;]  ，因此主进程是sh ,sh结束，主进程退出，自然容器也会退出。正确的做法是 CMD [ &quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot; ]</span></span></p></div><div id="https://www.notion.so/8cb2f44a5628448bbd9e3e3ca1a196b3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">5. ENTRYPOINT</strong></span></span></p></div><div id="https://www.notion.so/7bc0c87e4e7840b0914138e01b238b9a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">两种格式：</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/99694012808c4f1fa8112b6be7bb327a" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">ENTRYPOINT [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</span></span></li><li id="https://www.notion.so/1974f393d9224a7b956d804b009cdf29" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">ENTRYPOINT command param1 param2（shell中执行）</span></span></li></ul><div id="https://www.notion.so/a35760d757e140ceb3fc7ff08f02c771" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">配置容器启动后执行的命令，ENTRYPOINT 在运行时也可以替代，不过比CMD要略显繁琐，需要通过docker run的参数 -entrypoint来指定。</span></span></p></div><div id="https://www.notion.so/acb3a62bd6d6497fbc7994fd1b0cc500" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">当指定了ENTRYPOINT后，CMD的含义就发生了改变：</strong></span></span></p></div><div id="https://www.notion.so/87110da412a046039a9e90f83ae356bc" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果CMD中不是完整的命令，则将CMD的内容作为参数传给ENTRYPOINT指令，换句话说实际执行时，将变为 ENTRYPOINT CMD。</span></span></p></div><div id="https://www.notion.so/4c7723f282764181bf1e867cb1179eef" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果我们在Dockerfile种同时写了ENTRYPOINT和CMD，并且CMD是一个完整的指令，那么它们两个会互相覆盖，谁在最后谁生效。</span></span></p></div><div id="https://www.notion.so/fd962e4fb24146249b49fc82d7966166" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">每个 Dockerfile 中只能有一个 ENTRYPOINT，当指定多个时，只有最后一个起效。</span></span></p></div><div id="https://www.notion.so/42da6be7795e40bc9374cc7c4c62a4cc" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">6. EXPOSE</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/467ddd3a98f340028127dea2079ad580" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">EXPOSE &lt;端口1&gt; [&lt;端口2&gt;...]</span></span></li></ul><div id="https://www.notion.so/20f742207f7946a389f8742a64097b26" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">功能为暴漏容器运行时的监听端口给外部，但是EXPOSE并不会使容器访问主机的端口，如果想使得容器与主机的端口有映射关系，必须在容器启动的时候加上 -P参数。</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/575b1213bd864b83bf7185761f7ec0ba" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">P：大写P为自动映射，会将EXPOSE暴露出来的端口随机映射到宿主机的端口上，如果没有暴露端口，就不会有映射。</span><span class="SemanticString">
+-p：小写p为手动映射，需要自己指定宿主机的端口和容器的端口，形式为：
+-p	宿主机端口：容器端口</span></span></li></ul><div id="https://www.notion.so/078609caa51642fdbc4033ab6f682599" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">（1）无论有没有暴露端口、自动映射或者手动映射，宿主机都可以通过容器ip+port（port随容器内部服务监听端口改变而改变）端口访问服务；</span></span></p></div><div id="https://www.notion.so/2d05eae74c024c9887dd994a62f30014" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">（2）要通过宿主机ip+端口的方式访问服务，宿主机的端口必须与容器端口有映射关系；</span></span></p></div><div id="https://www.notion.so/759908b486d741bfab82d7db43562f8e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">（3）如果没有暴露端口，-P自动映射不会映射任何端口，-p可以指定宿主机端口和容器端口形成映射。</span></span></p></div><div id="https://www.notion.so/87afbdc1f3094c1aac8fa7fea33cc660" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">7. ENV</strong></span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/86937a3284414363bafaed1072192866" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">ENV &lt;键&gt; &lt;值&gt;</span></span></li><li id="https://www.notion.so/e82efbbd6db245f0851da0f8f3ee750b" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">ENV &lt;键&gt;=&lt;值&gt; ...</span></span></li></ol><div id="https://www.notion.so/22401bb88d8d44eb999795ff631f17d4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">两者的区别就是第一种是一次设置一个，第二种是一次设置多个</span></span></p></div><div id="https://www.notion.so/9b9094a65da541abafe2a45b355ef299" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">下列指令可以支持环境变量展开：
+</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">ADD、COPY 、ENV、EXPOSE 、LABEL 、USER 、WORKDIR 、VOLUME 、STOPSIGNAL、ONBU ILD</strong></span></span></p></div><div id="https://www.notion.so/0a77a92163cb4ba6ba989a14af58200f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">使用环境变量方式： $环境变量</strong></span></span></p></div><div id="https://www.notion.so/efc7ddda56ab4102a1859dc10313d5de" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">8. COPY</strong></span></span></p></div><div id="https://www.notion.so/212063d3e4514a7d88326d17db6116da" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">将从构建上下文目录中&lt;源路径&gt;的文件或者目录复制到新的一层的镜像内的&lt;目标路径&gt;位置。
+&lt;目标路径&gt;可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用WORKDIR指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。</span></span></p></div><div id="https://www.notion.so/be99d07c925f4ac0a098549df9b3d93c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">此外，还需要注意一点，使用COPY指令，源文件的各种元数据都会保留。比如读、写、执 行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用Git 进行管理的时候。</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/435d51b349164a689ab75f1686b8b520" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">COPY：&lt;源路径&gt;... &lt;目标路径&gt;</span></span></li><li id="https://www.notion.so/570ea0d7bd1e448695edf6d3286170b9" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">COPY： [&quot;&lt;源路径1&gt;&quot;,... &quot;&lt;目标路径&gt;&quot;]</span></span></li></ul><pre id="https://www.notion.so/dd9980e471104658b36a5a744f144cb1" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>COPY src1 \\
+     src2 \\
+     WORKDIR/
+</span></span></span></code></pre><div id="https://www.notion.so/6093f1785b694534ae211ba68788214d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">执行上述操作会发现将src1 src2 下的文件全部复制到WORKDIR下，并没有复制目录src1 src2，官方对于COPY解释是：</span></span></p></div><blockquote id="https://www.notion.so/6f0713937dae4cb6a663af3592a6a0a0" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">Note: The directory itself is not copied, just its contents.</span></span></blockquote><div id="https://www.notion.so/fa12323b2fab4a7a94af7f028d15485b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">即：COPY指令拷贝一个文件夹只会拷贝文件夹的内容。</span></span></p></div><div id="https://www.notion.so/3d65260a8cb74c11986fb46b1063b603" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">上述指令可以这样写：</span></span></p></div><pre id="https://www.notion.so/7ea1b934ade04b40a5dad45a56367cfc" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>COPY src1 \\
+     src2 \\
+     WORKDIR/src
+</span></span></span></code></pre><div id="https://www.notion.so/99d61a60bb8943629496610ca8456969" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这样将COPY的文件，放在了新创建的src目录下。</span></span></p></div><div id="https://www.notion.so/3b005289f2a246229a83a758d400da13" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">9. ADD</strong></span></span></p></div><div id="https://www.notion.so/975c365b2241443d9a0504f1716f3cb9" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">ADD指令和COPY的格式和性质基本一致，不过&lt;源文件&gt;可以是一个URL,同时如果源文件是一个压缩文件，ADD会自动执行解压缩。</span></span></p></div><div id="https://www.notion.so/f3481a02601f47dfb39dfb75cfbb4b67" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">因此在COPY 和ADD指令中选择的时候，可以遵循这样的原则，所有的文件复制均使用COPY指令，仅在需要自动解压缩的场合使用ADD 。</span></span></p></div><div id="https://www.notion.so/db4477ea00bb46a99a9553cd2a4c9804" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">10. VOLUME</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/c534a77f47394cb8b79d1fe7b543f221" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">VOLUME [&quot;&lt;路径1&gt;&quot;, &quot;&lt;路径2&gt;&quot;...]</span></span></li></ul><div id="https://www.notion.so/9adc4df0a2974e928dccc83aaee2874c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存 动态数据的应用，其数据库文件应该保存于卷(volume)中。</span></span></p></div><div id="https://www.notion.so/91f240318af0422c9661e2aea5e02935" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 Dockerfile中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。</span></span></p></div><div id="https://www.notion.so/a4f433ded41c4017b8640ee505d52214" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">如何使用：</strong></span><span class="SemanticString">
+在Dockerfile中定义匿名卷，运行容器时，使用参数 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">-v 宿主机目录:匿名卷</strong></span><span class="SemanticString">  进行挂载，实现了数据持久化。</span></span></p></div><div id="https://www.notion.so/dc380b072aca42928a9ce5e423519961" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">11. WORKDIR</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/177671ec6bd447909d0564df0da218e4" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">WORKDIR &lt;工作目录路径&gt;</span></span></li></ul><div id="https://www.notion.so/27d41d7bf8254a40acb5444e04c86fb1" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">使用WORKDIR指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，WORKDIR 会帮你建立目录。</span></span></p></div><div id="https://www.notion.so/bf18637d97a1415283c473693c48fdea" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以使用多个 WORKDIR 指令，后续命令如果参数是相对路径，则会基于之前命令指定的路径。</span></span></p></div><pre id="https://www.notion.so/4ace3299367e44d5be402fa5ba691d79" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>WORKDIR /a
+WORKDIR b
+WORKDIR c
+RUN pwd
+
+则最终路径为 /a/b/c。
+</span></span></span></code></pre><div id="https://www.notion.so/55d5a51b99f34642abbf03f5ac588b09" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">12. USER</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/7adfff5cd17e4854ac2b93e873c217d1" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">USER &lt;用户名&gt;</span></span></li></ul><div id="https://www.notion.so/81c7f6e169044e768fb8d5511a60cd4a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">USER是改变之后层的执行RUN ,CMD以及ENTRYPOINT这类命令的身份。USER只是帮助你切换到指定用户而已，这个用户必须是事先建立好的，否则无法切换。</span></span></p></div><div id="https://www.notion.so/38fd00b4246042818ecec1a225f7f0d2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">13. ONBUILD</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/82167d6fabf84149b1b46650fe521cd1" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">ONBUILD &lt;其它指令&gt;</span></span></li></ul><div id="https://www.notion.so/149f1f3c91e6488cb6cf4a53e005b658" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">ONBUILD是一个特殊的指令，它后面跟的是其它指令，比如RUN ,COPY等，而这些指令，在当前镜像构建时并不会被执行。只有当以当前镜像为基础镜像，去构建下一级镜像的时候才会被执行。
+Dockerfile中的其它指令都是为了定制当前镜像而准备的，唯有ONBUILD是为了帮助别人定制自己而准备的。</span></span></p></div></article>
+  <footer class="Footer">
+  <div>&copy; 夕的博客 2022</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>

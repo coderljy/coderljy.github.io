@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>Git基本操作&nbsp;|&nbsp;夕的博客</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="Git基本操作">
+  
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+    <h1 class="Header__Title">Git基本操作</h1>
+    
+  </header>
+  <article id="https://www.notion.so/e3aa0d0a3b4c44628f81edb89f3f1ad8" class="PageRoot"><div id="https://www.notion.so/d61c7a8f518f40a18bb6843762ba6a50" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. 仓库操作</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/cdd85735a72341efaf73c899f01288e8" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git init (创建一个Git仓库)</span></span></li><li id="https://www.notion.so/8472c4d3e5b748c78ce839920c7b3f8b" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git clone [url] （拷贝一个git仓库到本地）</span></span></li></ul><blockquote id="https://www.notion.so/ac6c8e20a917436da4436c6a657c7077" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">工作流 ：
+本地仓库由git维护的三棵“树”组成。第一个是你的工作目录，它持有实际文件；第二个是缓存区（Index）,它像个缓存区域，临时保存你的改动；最后是HEAD，指向你最近一次提交后的结果。</span></span></blockquote><div id="https://www.notion.so/1b238a1ed06d404881310dea07b37673" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. 将文件添加到缓存区</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/c8fa3e8e16754c7c8719dc798ab66774" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git add [filename]</span></span></li><li id="https://www.notion.so/c2c418d320c840809ac0df8967b7873f" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git add .</span></span><div id="https://www.notion.so/f824c46e1c5047dab66dc08694ed8f15" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">不加参数默认为将修改操作的文件和未跟踪新添加的文件添加到git系统的暂存区，注意不包括删除</span></span></p></div></li><li id="https://www.notion.so/ccbcfd4705ea4dbbbd0fc146a5faa950" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git add -u .</span></span><ul class="BulletedListWrapper"><li id="https://www.notion.so/109f49fa0a5946baa6be3c494909c114" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">u == --update ，表示将已跟踪文件中的修改和删除的文件添加到暂存区，不包括新增加的文件，注意这些被删除的文件被加入到暂存区再被提交并推送到服务器的版本库之后这个文件就会从git系统中消失了。</span></span></li></ul></li><li id="https://www.notion.so/0a1b5655e09041098a824bc8ff101ff5" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git add -A .</span></span><ul class="BulletedListWrapper"><li id="https://www.notion.so/cbc161431282411f99ad3855bae463a1" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">A == --all ， 表示将所有的已跟踪的文件的修改与删除和新增的未跟踪的文件都添加到暂存区。</span></span></li></ul></li></ul><div id="https://www.notion.so/5b5e8cdc9d004649886c55c8fe6b7c2e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">3. 将改动提交到 HEAD，但是不到远端仓库</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/08d228e8586143f8907ac979d9662836" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git commit -m &quot;代码提交信息&quot;</span></span></li></ul><div id="https://www.notion.so/c3a09c0425e44b949fe059f63fe5067e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">4. 推送改动</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/cc6be571f0e6485f881694e739a165ae" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git push origin master</span></span><div id="https://www.notion.so/e173925f984f4bfc863511993d60eb49" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">git commit 之后，你的改动已经在本地仓库的HEAD中了，执行此上命令，可提交至远端仓库，master 可换成你想推送的任何分支。</span></span></p></div></li><li id="https://www.notion.so/e2e6c2d587f04c02b1af606f96ce3d09" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git remote add origin [url]</span></span><div id="https://www.notion.so/f258d558ca0e4395b22fe4b8f222d214" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">使用此命令可将你的仓库连接到某个远程服务器，此后你就可以将改动推送到添加的服务器中了。</span></span></p></div></li></ul><div id="https://www.notion.so/ea12a844c23e40ed8bf009c4c5b27a2c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">5. 分支</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/4870f5ba2a4c455f9a8dcc8922690c0a" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git checkout -b [分支名称]</span></span><div id="https://www.notion.so/7cf69722100a4796844a7671bc0357b2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">新建分支并切换到该分支</span></span></p></div></li><li id="https://www.notion.so/7f0ea143d45e4b83a4c3f713af334f43" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git checkout master</span><span class="SemanticString">
+切换到指定分支</span></span></li><li id="https://www.notion.so/21ca786db75e4c78b3dc2f07a96f0092" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git branch -d [分支命称]</span><span class="SemanticString">
+将新建分支删掉</span></span></li></ul><div id="https://www.notion.so/629138b4c7594bd8af316917e7552193" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">6. 更新与合并</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/4567a7ad8a0643dd8143b0b47a790b05" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git pull</span><span class="SemanticString">
+按照git branch 设置的默认跟踪的服务器和分支来拉取</span></span></li><li id="https://www.notion.so/a828e3365bf547ad9edc1875ac7523eb" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">git pull origin master</span><span class="SemanticString">
+拉取远程服务器origin 的master分支</span></span></li></ul></article>
+  <footer class="Footer">
+  <div>&copy; 夕的博客 2022</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>

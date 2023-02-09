@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>Docker 网络详解&nbsp;|&nbsp;夕的博客</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="Docker 网络详解">
+  
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+    <h1 class="Header__Title">Docker 网络详解</h1>
+    
+  </header>
+  <article id="https://www.notion.so/c5d110bb78ca485d82e05fa1edbc2171" class="PageRoot"><h2 id="https://www.notion.so/b8093cefedd6447699db698d3bd8099a" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/b8093cefedd6447699db698d3bd8099a"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Docker 网络详解</span></span></h2><ul class="BulletedListWrapper"><li id="https://www.notion.so/07839ee79f504eb688536c2c7e889520" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">Bridge contauner 桥接式网络模式</span></span></li><li id="https://www.notion.so/1dcfdc37e991478db04503de32c75434" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">Host(open) container 开放式网络模式</span></span></li><li id="https://www.notion.so/08512201df0e42ad97d915f821243f28" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">Container(join) container 联合挂载式网络模式，是host网络模式的延伸</span></span></li><li id="https://www.notion.so/2a97092ee098499db91d090841ccc67b" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">None(Close) container 封闭式网络模式</span></span></li></ul><h2 id="https://www.notion.so/e7f187f57fe7475f8c53fc0ea541cf0d" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/e7f187f57fe7475f8c53fc0ea541cf0d"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Bridge(桥接式网络模式)</span></span></h2><div id="https://www.notion.so/b4a048be54fa4640815097698b9adef7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. 介绍</strong></span></span></p></div><div id="https://www.notion.so/c28e96fd6e6b4f46907530bac595bf0e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">当Docker进程启动时，会在主机上创建一个名为docker0的虚拟网桥，此主机启动的Docker容器会连接到这个虚拟网桥上，默认分配网段为172.17.0.0/16，实际上是 Linux 的一个 bridge，可以理解为一个软件交换机，附加在其上的任何网卡之间都能自动转发数据包。</span></span></p></div><div id="https://www.notion.so/f44ddca3f1584c30aa5c1012507c6133" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">从docker0子网中分配一个IP给容器使用，并设置docker0的IP地址为容器的默认网关。在主机创建一对虚拟网卡</span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://www.cnblogs.com/bakari/p/10613710.html">veth pair 设备</a></span><span class="SemanticString">,Docker将veth pair 设备的一端放在新创建的容器中，并命名为eth0（容器的网卡），另一端放在主句中，以vethxxx这样的名字命名，并将这个网络设备加入到docker0网桥中。</span></span></p></div><div id="https://www.notion.so/4acbbd6de5a84b3ca008c471e6f53dac" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">veth 是 Virtual ETHernet 的缩写，是一种虚拟网络设备。它的特点是：当它被创建以后，总是以两张虚拟网卡（Veth peer）形式成对出现，并且在一个网卡上的数据包可直接转发给另一个与之对应的网卡上，即使这两个网卡不在同一个namespace中。</span></span></p></div><div id="https://www.notion.so/58dc2337f3f74d2e8e4a88fc8851e3a8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. 容器与容器间的通信</strong></span></span></p></div><div id="https://www.notion.so/abd07fcef2ac4d0998cbf7ff292dda99" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">容器1（172.17.0.2）ping 容器2（172.17.0.3）；</span><span class="SemanticString">
+根据路由规则，数据包从容器1（172.17.0.2）的eth0转发至与之对应的veth上，该veth桥接在了docker0上，此时数据包到达了docker0,docker0扮演交换机的角色，并广播ARP请求寻找容器2（172.17.0.3）的mac地址，而此时容器2的另一个veth 设备桥接在了docker0，并收到ARP请求，发现自己是172.17.0.3 ，故将其mac地址回复给容器1，此时容器1和容器2就可以进行通信了，并且在容器1可以查看到缓存的容器2的mac地址。</span></span></p></div><div id="https://www.notion.so/b8cac38ee87846f4b393d0f33df14537" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">3. 容器与外部网络通讯</strong></span></span></p></div><div id="https://www.notion.so/946346240a5d4431a7f30bba4509ab6d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">同理，如果容器ping另一个主机，它发出去的数据包经过docker0网桥流向宿主机的eth0网卡，eth0再将数据包转发给与之相通的主机，于是，容器便可以跟其它主机通信了。（主要宿主机eth0能到达，容器都可以与之通信）</span></span></p></div><div id="https://www.notion.so/7bfc889455a6462eb5750811074b99db" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">4. 宿主机与容器通讯</strong></span></span></p></div><div id="https://www.notion.so/b1a348adb6c44444908f6e3ef15813aa" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">当宿主机访问容器时，数据包从docker0流入到与容器的eth0对应的veth设备，veth与容器的eth0相通信。</span></span></p></div><div id="https://www.notion.so/431869be3cd14eae901a212c4dac6a80" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">5. 外部访问容器</strong></span></span></p></div><div id="https://www.notion.so/2b620b3030e04d26a190c46df8a24806" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">默认情况，其他外部网络（宿主机以外）无法访问到容器内的端口，通常的做法是使用-p或者-P选项，来暴露容器中的端口到宿主机上，外部网络通过访问宿主机的端口从而访问到容器端口。本质上来说，该方式是通过iptables规则转发实现的。</span></span></p></div><div id="https://www.notion.so/021214d4d3554c4681085c771c19f200" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">6. 自定义网桥</strong></span></span></p></div><div id="https://www.notion.so/b57fe2acb240455b92e891a7f5e5b0dd" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">除了使用默认docker0作网桥以为还可以使用docker network 相关命令自定义网桥，以下将创建一个br1的网络，子网是172.30.0.0/16，网关为172.30.0.1。</span></span></p></div><pre id="https://www.notion.so/6c19c5ad26f84fc1b90655511402c843" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>#创建br1网桥
+docker network create -d bridge --subnet &#x27;172.30.0.0/16&#x27; --gateway &#x27;172.30.0.1&#x27; br1
+
+#查看docker网络
+ docker network ls
+
+ NETWORK ID          NAME                    DRIVER              SCOPE
+ b9c01f82c16b        br1                     bridge              local
+
+ #自定义网桥的使用
+ docker run -it --network br1 镜像名称 bash
+</span></span></span></code></pre><h2 id="https://www.notion.so/d90029caeab942039777e5b325ffbefb" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/d90029caeab942039777e5b325ffbefb"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Host（开放式网络模式）</span></span></h2><div id="https://www.notion.so/ae9c2b54b5db41b780dcc732ea61c8c8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Host模式使用是在容器启动时候指明--network host，此时容器共享宿主机的Network Namespace，容器内启动的端口直接是宿主机的端口，并且容器不会创建网卡和IP，直接使用宿主机的网卡和IP，但是容器内的其他资源是隔离的，如文件系统、用户和用户组。这种模式的好处就是效率高，因为不需要额外的网络开始，直接使用宿主机网络。</span></span></p></div><pre id="https://www.notion.so/7144c89f077d4d11a112efd022e32633" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>docker run -d --name nginx --network host nginx:latest
+</span></span></span></code></pre><div id="https://www.notion.so/bec26218b64e4dbe8635b884d662fb86" class="Image Image--PageWidth"><figure><a href="#"><img src="#" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><h2 id="https://www.notion.so/3e2d888e1da84681846b9cedb4edff9a" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/3e2d888e1da84681846b9cedb4edff9a"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Container(联合挂载式网络模式)</span></span></h2><div id="https://www.notion.so/1b78a2bd13ed4456becc14c14c546f8e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这个模式指定新创建的容器和已经存在的一个容器共享一个 Network Namespace，而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的 IP，而是和一个指定的容器共享 IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过 lo回环 通信。同样，kubernetes中的pod的话，pod内的网络也是靠这样的共享方式来实现的。</span></span></p></div><h2 id="https://www.notion.so/0b5229038a8c40ff9eb29fed6aa8aaa8" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/0b5229038a8c40ff9eb29fed6aa8aaa8"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">None（封闭式网络模式）</span></span></h2><div id="https://www.notion.so/4a8bc5ba381249d3934b7e27059adfe1" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">使用--network none选项指定其网络模式，在该模式下虽然容器有着自己的Network Namespace，但是容器内没有网卡、IP、路由信息，只有一个lo回环接口。如果需要网络配置则需要用户手动进行配置网卡、ip以及路由信息，通常这样的容器用于承担某些无需网络介入的工作，如离线任务、备份等。</span></span></p></div></article>
+  <footer class="Footer">
+  <div>&copy; 夕的博客 2022</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>

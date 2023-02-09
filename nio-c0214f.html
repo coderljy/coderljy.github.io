@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>NIO详解&nbsp;|&nbsp;夕的博客</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="NIO详解">
+  
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+    <h1 class="Header__Title">NIO详解</h1>
+    
+  </header>
+  <article id="https://www.notion.so/c0214f230ebb4d08b0a2048a8192dcdb" class="PageRoot"><h1 id="https://www.notion.so/f2537701c14d4ef38764cc1f423c1d63" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--1"><a class="Anchor" href="#https://www.notion.so/f2537701c14d4ef38764cc1f423c1d63"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Buffer（缓冲区）</span></span></h1><div id="https://www.notion.so/58e413c623034c478cb09d3858e8793d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Java NIO Buffer用于和NIO Channel交互。我们从Channel中读取数据到Buffer中，从Buffer把数据写到Channel。</span></span></p></div><div id="https://www.notion.so/6d8b3ce4b97041c194f70876e0566d6b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">核心缓冲区如下：</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/e1121f5de11b4b86a6fecd7822fd6354" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">ByteBuffer</span></span></li><li id="https://www.notion.so/62fe0f8812354f33b1a93443c9b138e8" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">CharBuffer</span></span></li><li id="https://www.notion.so/ed743dd14d4e4c80962c917afcd2d197" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">ShortBuffer</span></span></li><li id="https://www.notion.so/a0228bc50d02485e908361a84539ca3e" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">IntBuffer</span></span></li><li id="https://www.notion.so/b24a973abb7b467a8b93072fb5ddaf04" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">FloatBuffer</span></span></li><li id="https://www.notion.so/d85b5b3c6abb4b67bfe8b0b993480ffd" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">DoubleBuffer</span></span></li><li id="https://www.notion.so/45cf0a8372f341919cd1e04260014cb9" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">LongBuffer</span></span></li></ul><div id="https://www.notion.so/e0f8d4c8b658454faa6b58f845f76b0f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">利用Buffer读写数据，通常遵循四个步骤：</strong></span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/ea09122d26a041c1a881c3be3f0b6967" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">把数据写入Buffer（Buffer被创建时是写模式）</span></span></li><li id="https://www.notion.so/7827ee782eaf4b7eabd61c499cca837e" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">调用flip（）函数（将Buffer从写模式，转换为读模式）</span></span></li><li id="https://www.notion.so/f8849c50427049038787e6bd7eb9378c" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">从Buffer中读取数据</span></span></li><li id="https://www.notion.so/a978dba62ce44003b7d495f5816fc034" class="NumberedList" value="4"><span class="SemanticStringArray"><span class="SemanticString">调用buffer.clear()或者buffer.compact() （重置Buffer，转为写模式）</span></span></li></ol><div id="https://www.notion.so/f6d77240683d4f669a753e7996675fdc" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">当写入数据到buffer中时，buffer会记录已经写入的数据大小。当需要读数据时，通过 flip() 方法把buffer从写模式调整为读模式；在读模式下，可以读取所有已经写入的数据。 当读取完数据后，需要清空buffer，转换为写入操作。清空buffer有两种方式：调用 clear() 或 compact() 方法。clear会清空整个buffer，compact则只清空已读取的数据，未被读取的数据会被移动到buffer的开始位置，写入位置则近跟着未读数据之后。</span></span></p></div><div id="https://www.notion.so/00fa19c510fd4f8bb2329081744f8ed8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Buffer的三种属性：</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/b30f0ab04f0947129ddab199556e8141" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">capacity容量</span></span><blockquote id="https://www.notion.so/c09d4070b7ee4bb68444008343816f8b" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">容量（Capacity） 作为一块内存，buffer有一个固定的大小，叫做capacit（容量）。也就是最多只能写入容量值得字节，整形等数据。一旦buffer写满了就需要清空已读数据以便下次继续写入新的数据.</span></span></blockquote></li><li id="https://www.notion.so/806fa6f97ce4483997615a0a9c1699a8" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">position位置</span></span><blockquote id="https://www.notion.so/9bc97cf96f8045fda02c5b1b51cbde4a" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">位置（Position） 当写入数据到Buffer的时候需要从一个确定的位置开始，默认初始化时这个位置position为0，一旦写入了数据比如一个字节，整形数据，那么position的值就会指向数据之后的一个单元，position最大可以到capacity-1.
+当从Buffer读取数据时，也需要从一个确定的位置开始。buffer从写入模式变为读取模式时，position会归零，每次读取后，position向后移动。</span></span></blockquote></li><li id="https://www.notion.so/8a2888d7c4b349a79afa886eb8e238ed" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">limit限制</span></span><blockquote id="https://www.notion.so/7ec673ff6776488b83a7a35a6c3eb438" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">上限（Limit） 在写模式，limit的含义是我们所能写入的最大数据量，它等同于buffer的容量。一旦切换到读模式，limit则代表我们所能读取的最大数据量，他的值等同于写模式下position的位置。</span></span></blockquote></li></ul><h2 id="https://www.notion.so/ca6ad40ae2834fc2b4cb40f9855dcee2" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/ca6ad40ae2834fc2b4cb40f9855dcee2"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Buffer 常见用法</span></span></h2><div id="https://www.notion.so/c42fb10ad3b94a378638f1e4272eaaf6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这里用ByteBuffer为例</span></span></p></div><h3 id="https://www.notion.so/08e46df64f274646bacd1707f632346e" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/08e46df64f274646bacd1707f632346e"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">分配缓冲区</span></span></h3><pre id="https://www.notion.so/9aba9f60f07f4d658994ff3980c1c476" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>ByteBuffer buf = ByteBuffer.allocate(28);
+</span></span></span></code></pre><h3 id="https://www.notion.so/ab4811c49a324dc291a5e871153d85b5" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/ab4811c49a324dc291a5e871153d85b5"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">写入数据</span></span></h3><pre id="https://www.notion.so/619bb83610f945e390e3360362f22a0f" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>buf.put(i)
+</span></span></span></code></pre><div id="https://www.notion.so/75e3820d7c164708b010170ef40684a3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">源码如下：</strong></span></span></p></div><pre id="https://www.notion.so/e8055bf569bb40eea0978bbbd4f6874b" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>public ByteBuffer put(byte x) {
+    hb[ix(nextPutIndex())] = x; //hb为存放在heap的底层数组
+    return this;
+}
+
+final int nextPutIndex() {                          // package-private
+    if (position &gt;= limit)
+        throw new BufferOverflowException();
+    return position++;
+}
+
+protected int ix(int i) {
+    return i + offset;  //这里offset初始值为0
+}
+
+</span></span></span></code></pre><h3 id="https://www.notion.so/9fd6e9aab38c4383984fbe1a7b9e5101" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/9fd6e9aab38c4383984fbe1a7b9e5101"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">模式转换</span></span></h3><pre id="https://www.notion.so/0ad1241365f14b7ca143f90bbeabe571" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>buf.flip() //将写入模式转换为读取模式
+</span></span></span></code></pre><div id="https://www.notion.so/2562f5592dfa4f8fa7345d22f3a9d3da" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">源码如下：</strong></span></span></p></div><pre id="https://www.notion.so/0be57925bb6440a595ea86aa51ccc62d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>public final Buffer flip() {
+    limit = position;
+    position = 0;
+    mark = -1;
+    return this;
+}
+</span></span></span></code></pre><div id="https://www.notion.so/943b802952914ccfb6377acdb5f3c9f8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">调用flip()方法，会将limit位置设置为写入模式时的position，即limit变为写入数据的最大坐标；position设置为0，代表可以从0开始读取数据；mark = -1 ,即将mark重置。</span></span></p></div><h3 id="https://www.notion.so/a2c639d454d84cd69dc38b4b394c3649" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/a2c639d454d84cd69dc38b4b394c3649"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">数据读取</span></span></h3><pre id="https://www.notion.so/1f7783da21e14a159d352876c9600aca" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>buf.get()
+</span></span></span></code></pre><div id="https://www.notion.so/9e715f0222834c5cb618a2242299c7fa" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">源码如下：</strong></span></span></p></div><pre id="https://www.notion.so/3781cc2f24cb4c94b784c7e8a6d3a048" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>public byte get() {
+    return hb[ix(nextGetIndex())]; //hb为存放在heap的底层数组
+}
+
+final int nextGetIndex() {                          // package-private
+    if (position &gt;= limit)
+        throw new BufferUnderflowException();
+    return position++;
+}
+
+protected int ix(int i) {
+    return i + offset;
+}
+
+</span></span></span></code></pre><h3 id="https://www.notion.so/f9f483fb47e14a27bc7ea55d8736944f" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/f9f483fb47e14a27bc7ea55d8736944f"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">重复读取</span></span></h3><pre id="https://www.notion.so/d6a4a4123033403c863635a8ec81febb" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>buf.rewind()
+</span></span></span></code></pre><div id="https://www.notion.so/85e00a29afdd49de87fcde27f157a15f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">源码如下：</strong></span></span></p></div><pre id="https://www.notion.so/4bcdb5a85e66420a8162955965ced950" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>public final Buffer rewind() {
+    position = 0;
+    mark = -1;
+    return this;
+}
+</span></span></span></code></pre><div id="https://www.notion.so/9a96d4d3777640a883e7a0c1a7f612c0" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Buffer.rewind()方法将position置为0，这样我们可以重复读取buffer中的数据。limit保持不变。</span></span></p></div><h3 id="https://www.notion.so/20816acdf8164fb5b3dbdf648688e226" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/20816acdf8164fb5b3dbdf648688e226"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Buffer重置</span></span></h3><div id="https://www.notion.so/b3276a4f0c964532b24c80c88600b8e4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">重置后变为写模式</span></span></p></div><pre id="https://www.notion.so/a0be066dad98447595441d247ce5f67b" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>buf.clear()
+
+
+buf.compact()
+</span></span></span></code></pre><div id="https://www.notion.so/f026f9cd36454ae6b87d20ab97754452" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">一旦Buffer中读取完数据，需要复用Buffer为下次写数据做准备。</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/daa78304994e4baeb7943247c72f14e7" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">clear()</span></span><pre id="https://www.notion.so/7a74b4a7f66149eb98a00bdb54ed26fa" class="Code"><code><span class="SemanticStringArray"></span></code></pre></li></ul><div id="https://www.notion.so/3c0c72797f5647b9844fff175d0b5dc4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">public final Buffer clear() {
+position = 0;
+limit = capacity;
+mark = -1;
+return this;
+}</span></span></p></div><pre id="https://www.notion.so/21b7c92585424d75913b9b34ed3c72fc" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>调用的是clear()方法，position将被设回0，limit被设置成 capacity的值。换句话说，Buffer 被清空了。Buffer中的数据并未清除，只是这些标记告诉我们可以从哪里开始往Buffer里写数据。
+
+- compact()
+
+  ```Java
+public ByteBuffer compact() {
+    System.arraycopy(hb, ix(position()), hb, ix(0), remaining());
+    position(remaining());
+    limit(capacity());
+    discardMark();
+    return this;
+}
+
+System.arrayCopy(Object srcArray,int srcPos,Object destArray ,int destPos,int length)
+
+参数：
+
+Object srcArray 原数组（要拷贝的数组）
+int srcPos 要复制的原数组的起始位置（数组从0位置开始）
+Object destArray 目标数组
+int destPos 目标数组的起始位置
+int length 原数组的长度
+
+protected int ix(int i) {
+    return i + offset; //offset 默认为 0
+}
+
+public final int remaining() {
+    return limit - position;
+}
+
+final void discardMark() {                          // package-private
+    mark = -1;
+}
+
+</span></span></span></code></pre><div id="https://www.notion.so/809d9ddbe0164e66b317aefcbf4c6a24" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果Buffer中仍有未读的数据，且后续还需要这些数据，但是此时想要先写些数据，那么使用compact()方法。compact()方法将所有未读的数据拷贝到Buffer起始处。然后将position设到最后一个未读元素正后面。limit属性依然像clear()方法一样，设置成capacity。</span></span></p></div><h3 id="https://www.notion.so/30b5629d462247159099f02c3ef22aa8" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/30b5629d462247159099f02c3ef22aa8"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Buffer标记</span></span></h3><div id="https://www.notion.so/745b641bf2c84bb2a0c738cdc33c7012" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">通过调用Buffer.mark()方法，可以标记Buffer中的一个特定position。之后可以通过调用Buffer.reset()方法恢复到这个position。</span></span></p></div><pre id="https://www.notion.so/39e00d9a0df74efa88b802b36c4e905a" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>buffer.mark();
+//call buffer.get() a couple of times, e.g. during parsing.
+buffer.reset();  //set position back to mark.
+</span></span></span></code></pre><div id="https://www.notion.so/a05f018373f14d6eaec76e6ae3b93655" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">源码如下：</strong></span></span></p></div><pre id="https://www.notion.so/21522d1598a34c2e8f3e2af8aab1dd22" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>public final Buffer mark() {
+    mark = position;
+    return this;
+}
+
+public final Buffer reset() {
+    int m = mark;
+    if (m &lt; 0)
+        throw new InvalidMarkException();
+    position = m;
+    return this;
+}
+
+</span></span></span></code></pre><h3 id="https://www.notion.so/0f274fe8891645c7852024bb5c854f38" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/0f274fe8891645c7852024bb5c854f38"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Buffer 比较</span></span></h3><ul class="BulletedListWrapper"><li id="https://www.notion.so/ec4f3da352834833a5c36e4f1630bfd7" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">equals()</span></span></li></ul><pre id="https://www.notion.so/e13a1f08716548dc88a590dcfd94f9a6" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>public boolean equals(Object ob) {
+    if (this == ob)
+        return true;
+    if (!(ob instanceof ByteBuffer))
+        return false;
+    ByteBuffer that = (ByteBuffer)ob;
+    if (this.remaining() != that.remaining())
+        return false;
+    int p = this.position();
+    for (int i = this.limit() - 1, j = that.limit() - 1; i &gt;= p; i--, j--)
+        if (!equals(this.get(i), that.get(j)))
+            return false;
+    return true;
+}
+</span></span></span></code></pre><ul class="BulletedListWrapper"><li id="https://www.notion.so/31d62cce1d8346ab837ca15f07cba20a" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">compareTo()</span></span></li></ul><pre id="https://www.notion.so/c100ea7e1f5a45e9aa3c05dce610e1ec" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>public int compareTo(ByteBuffer that) {
+    int n = this.position() + Math.min(this.remaining(), that.remaining());
+    for (int i = this.position(), j = that.position(); i &lt; n; i++, j++) {
+        int cmp = compare(this.get(i), that.get(j));
+        if (cmp != 0)
+            return cmp;
+    }
+    return this.remaining() - that.remaining();
+}
+</span></span></span></code></pre><div id="https://www.notion.so/98a3eb3d5f8641a49d266fcac1883d7f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">判断两个buffer相对，需满足：</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/f83b4db3a27c4c92956b8d9425802e20" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">类型相同</span></span></li><li id="https://www.notion.so/b656b597ded945e78ef1265ba23d73e0" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">buffer中剩余字节数相同</span></span></li><li id="https://www.notion.so/6852eed2b1584b03b03d2a7709707c9f" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">所有剩余字节相等</span></span></li></ul><div id="https://www.notion.so/0d9bea057bed4eaab68f317838db094f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">从上面的三个条件可以看出，equals只比较buffer中的部分内容，并不会去比较每一个元素。 compareTo(): compareTo也是比较buffer中的剩余元素，只不过这个方法适用于比较排序的：</span></span></p></div><h1 id="https://www.notion.so/edce279a3b4a47d0940a6b3769adc84d" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--1"><a class="Anchor" href="#https://www.notion.so/edce279a3b4a47d0940a6b3769adc84d"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Channel</span></span></h1><h2 id="https://www.notion.so/60c97a51b8c340c2a093ee5de3069f78" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/60c97a51b8c340c2a093ee5de3069f78"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Java NIO Channel 的特点</span></span></h2><ul class="BulletedListWrapper"><li id="https://www.notion.so/4512b51db6c84ea29e1c1a35adc2afd8" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">OIO流一般是单向的（只能读或者写），通道可以读也可以写</span></span></li><li id="https://www.notion.so/345fa9dc3ce94fa2934638841cd33271" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">OIO流读写是阻塞的，而通道可以是异步读写的。</span></span></li><li id="https://www.notion.so/e9c07fe9bb644bb69a92a4599ce212e0" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">通道总是基于缓冲区Buffer来读写。</span></span></li></ul><h2 id="https://www.notion.so/ff6917c6948d478290b0c279828a6dde" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/ff6917c6948d478290b0c279828a6dde"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Channel类型</span></span></h2><ol class="NumberedListWrapper"><li id="https://www.notion.so/0f783dba0f81449191dda998edce8696" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">FileChannel</span></span></li></ol><div id="https://www.notion.so/b93bf81420d64731808f6c9fa9db523c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">用于文件读写操作</span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/9f018cb2c863482cbef65a6f01822a28" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">DatagramChannel</span></span></li></ol><div id="https://www.notion.so/fcaa5d0e7bf348acb7f1a7d126ba89c2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">用于UDP数据读写</span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/d8d518c5bba246fbab01a6893e567b91" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">SocketChannel</span></span></li></ol><div id="https://www.notion.so/a81746a0d0834effa35989aedcac543a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">用于TCP数据读写</span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/9ea88eb416784128805bd73a772b0bbf" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">ServerSocketChannel</span></span></li></ol><div id="https://www.notion.so/ddad907a09a445e7963bcea103dfd6d7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">允许我们监听TCP链接请求，每个请求会创建一个SocketChannel</span></span></p></div><h2 id="https://www.notion.so/10fe508a8cdb47a29bab62b91dec0fb9" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/10fe508a8cdb47a29bab62b91dec0fb9"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Channel的使用</span></span></h2><h3 id="https://www.notion.so/aea1f84a6a424bee8d6d33dd8466a1cb" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/aea1f84a6a424bee8d6d33dd8466a1cb"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">FileChannel</span></span></h3><pre id="https://www.notion.so/69fa67a8ff104ae48d4c265cc05294b7" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>public static void main(String[] args) throws IOException {
+
+    //获取FileChannel对象
+    RandomAccessFile file = new RandomAccessFile(&quot;test.txt&quot;,&quot;rw&quot;);
+    FileChannel fileChannel = file.getChannel();
+
+    //读取数据到Buffer
+    ByteBuffer buffer = ByteBuffer.allocate(48);
+    int bytesRead = fileChannel.read(buffer);
+
+    //写入数据
+    String newData = &quot;New String to write to file...&quot; + System.currentTimeMillis();
+    ByteBuffer buf = ByteBuffer.allocate(48);
+    buf.clear();
+    buf.put(newData.getBytes());
+    buf.flip();
+    while(buf.hasRemaining()) {
+        fileChannel.write(buf);
+    }
+
+    //关闭
+    fileChannel.close();
+
+    //强制刷新磁盘
+    //FileChannel的force()方法将所有未写入的数据从通道刷新到磁盘中。
+    // 在你调用该force()方法之前，出于性能原因，操作系统可能会将数据缓存在内存中，
+    // 因此您不能保证写入通道的数据实际上写入磁盘。
+    fileChannel.force(true);
+
+}
+</span></span></span></code></pre><h3 id="https://www.notion.so/24a534f7361b431fabb1223cf6deb4ee" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/24a534f7361b431fabb1223cf6deb4ee"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">DatagramChannel</span></span></h3><ul class="BulletedListWrapper"><li id="https://www.notion.so/3cfb560d90d34784b128cb96bcf9fd5e" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">UDP Server</span></span></li></ul><pre id="https://www.notion.so/170f705ddfb74b5c83b1a9b2ba23e320" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.nio.channel;
+
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.util.Iterator;
+import java.util.Set;
+
+/**
+ * @author : 夕
+ * @date : 2019/9/24
+ */
+public class NIOUDPServer implements Runnable{
+
+    private int port;
+
+    public NIOUDPServer(int port){
+        this.port = port;
+        new Thread(this).start();
+    }
+
+    @Override
+    public void run() {
+        try {
+            //建立DatagramChannel
+            DatagramChannel datagramChannel = DatagramChannel.open();
+            //设置为非阻塞模式
+            datagramChannel.configureBlocking(false);
+            //获取DatagramSocket
+            DatagramSocket datagramSocket = datagramChannel.socket();
+            //设置接收的buffer最大值
+            datagramSocket.setReceiveBufferSize(10240);
+            //绑定端口
+            datagramSocket.bind(new InetSocketAddress(port));
+
+            //DatagramChannel注册到Selector
+            Selector selector = Selector.open();
+            datagramChannel.register(selector,SelectionKey.OP_READ);
+            System.out.println(&quot;UDPServer 正在监听端口：&quot; + port);
+
+            //分配数据缓冲区
+            ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+
+            //记录接收的字节总数
+            int number = 0;
+            while (true){
+                //如果选择器数目为0，则结束循环
+                int selectNum = selector.select();
+                if(selectNum == 0 ) {
+                    continue;
+                }
+                //得到选择键列表
+                Set keys = selector.selectedKeys();
+                Iterator iterator = keys.iterator();
+                while (iterator.hasNext()){
+                    SelectionKey k = (SelectionKey) iterator.next();
+                    //通过位运算得到通道是否正常准备
+                    if( (k.readyOps() &amp; SelectionKey.OP_READ) == SelectionKey.OP_READ ){
+                        //获取客户端准备好的channel
+                        DatagramChannel datagramChannelClient = (DatagramChannel) k.channel();
+                        datagramChannelClient.configureBlocking(false);
+
+                        //先将buffer清除，防止数据混合
+                        byteBuffer.clear();
+                        //接收数据到buffer,返回代表客户端的SocketAddress对象
+                        SocketAddress socketAddressClient = datagramChannelClient.receive(byteBuffer);
+
+                        //读取数据
+                        byteBuffer.flip();
+                        //判空操作
+                        if(byteBuffer.remaining() &lt;= 0){
+                            System.out.println(&quot;datagramChannelClient channel is null&quot;);
+                        }
+                        //记录接收的字节总数
+                        number += byteBuffer.remaining();
+                        byte[] bytes = new byte[byteBuffer.remaining()];
+                        for (int i = 0;i&lt;byteBuffer.remaining();i++){
+                            bytes[i] = byteBuffer.get(i);
+                        }
+                        String in = new String(bytes,&quot;utf-8&quot;);
+                        System.out.println(number + &quot;::: Server 接收到：&quot; + in );
+
+                        //返回响应
+                        byteBuffer.clear();
+                        byteBuffer.put(&quot;welcome !!!&quot;.getBytes());
+                        byteBuffer.flip();
+                        datagramChannelClient.send(byteBuffer,socketAddressClient);
+                    }
+                }
+                keys.clear();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        new NIOUDPServer(1024);
+    }
+
+}
+</span></span></span></code></pre><ul class="BulletedListWrapper"><li id="https://www.notion.so/ffded847c2fa4ef6a4eee1105123079e" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">UDP Client</span></span></li></ul><pre id="https://www.notion.so/5b63d9ee48e34529b2ba87762f9b759a" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.nio.channel;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
+
+/**
+ * @author : 夕
+ * @date : 2019/9/24
+ */
+public class NIOUDPClient extends Thread{
+    private String host;
+    private int port;
+
+    //记录每个client发送的字节数
+    private int number;
+
+    public NIOUDPClient(String host,int port,int threadNum){
+        this.host = host;
+        this.port = port;
+
+        for(int i = 0;i &lt; threadNum;i++){
+            new Thread(this).start();
+        }
+    }
+
+    @Override
+    public void run() {
+        try{
+            //构建客户端channel
+            DatagramChannel datagramChannelClient = DatagramChannel.open();
+            SocketAddress serverSocketAddress = new InetSocketAddress(host,port);
+            datagramChannelClient.connect(serverSocketAddress);
+
+            //构建发送数据包
+            ByteBuffer byteBuffer = ByteBuffer.allocate(128);
+
+            byteBuffer.clear();
+            byteBuffer.put(&quot;testClient&quot;.getBytes());
+            byteBuffer.flip();
+
+            //判空操作
+            if(byteBuffer.remaining() &lt;= 0){
+                System.out.println(&quot;client data is null&quot;);
+            }
+
+            //发送数据
+            int sendNum = datagramChannelClient.send(byteBuffer,serverSocketAddress);
+            number += sendNum;
+            System.out.println(&quot;客户端发送的字节数：&quot; + number);
+
+            //接收服务器响应
+            byteBuffer.clear();
+            datagramChannelClient.receive(byteBuffer);
+            byteBuffer.flip();
+
+            //读取服务器响应
+            byte[] bytes = new byte[byteBuffer.remaining()];
+            for(int i = 0;i&lt;byteBuffer.remaining();i++){
+                bytes[i] = byteBuffer.get();
+            }
+            String res = new String(bytes,&quot;utf-8&quot;);
+            System.out.println(&quot;client 接收 Server 响应 ： &quot; + res);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        new NIOUDPClient(&quot;127.0.0.1&quot;,1024,5);
+    }
+}
+</span></span></span></code></pre><h3 id="https://www.notion.so/170987950fb44a5c821abe4bc97901d3" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/170987950fb44a5c821abe4bc97901d3"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">ServerSocketChannel 和 SocketChannel</span></span></h3><ul class="BulletedListWrapper"><li id="https://www.notion.so/558b00eafe514551a85204fb9c311a50" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">TCP Server</span></span></li></ul><pre id="https://www.notion.so/cdc389201d7d48a5af069f6f7f898a53" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.nio.channel;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.util.Iterator;
+
+/**
+ * @author : 夕
+ * @date : 2019/9/25
+ */
+public class NIOTCPServer implements Runnable {
+
+    private int port;
+
+    public NIOTCPServer(int port) {
+        this.port = port;
+        new Thread(this).start();
+    }
+
+    @Override
+    public void run() {
+        try {
+            //建立 ServerSocketChannel
+            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+            //设置成非阻塞模式
+            serverSocketChannel.configureBlocking(false);
+            //获取ServerSocket
+            ServerSocket serverSocket = serverSocketChannel.socket();
+            //绑定端口
+            serverSocket.bind(new InetSocketAddress(port));
+
+            //将ServerSocketChannel注册到Selector
+            Selector selector = Selector.open();
+            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+            System.out.println(&quot;TCP Server 正在监听端口： &quot; + port);
+
+            while (true) {
+                //进行事件监听轮询
+                int selectNum = selector.select();
+                if (selectNum == 0) {
+                    continue;
+                }
+                //获取选择键的迭代器
+                Iterator&lt;SelectionKey&gt; iterator = selector.selectedKeys().iterator();
+                while (iterator.hasNext()) {
+                    SelectionKey selectionKey = iterator.next();
+                    iterator.remove();
+
+                    //判断选择键事件类型，进行处理
+                    if (selectionKey.isAcceptable()) {
+                        //通过选择键获取ServerSocketChannel
+                        ServerSocketChannel serverSocketChannela = (ServerSocketChannel) selectionKey.channel();
+                        //通过ServerSocketChannel 获取相应的 SocketChannel，建立连接: 将Client的SocketChannel注册到
+                        SocketChannel socketChannel = serverSocketChannela.accept();
+                        socketChannel.configureBlocking(false);
+                        socketChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                        System.out.println(&quot;客户端：&quot;
+                                + socketChannel.socket().getInetAddress().getHostName() + &quot;:&quot;
+                                + socketChannel.socket().getPort() + &quot; 连接上了&quot;);
+                    }
+
+                    if (selectionKey.isReadable()) {
+                        SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
+                        //创建接收数据的容器
+                        ByteBuffer byteBuffer = ByteBuffer.allocate(128);
+                        byteBuffer.clear();
+
+                        try {
+                            //从SocketChannel中读取数据到ByteBuffer
+                            socketChannel.read(byteBuffer);
+
+                        } catch (IOException e) {
+                            //                          客户端异常断开连接
+                            System.out.println(&quot;客户端：&quot;
+                                    + socketChannel.socket().getInetAddress().getHostName() + &quot;:&quot;
+                                    + socketChannel.socket().getPort() + &quot; 已断开连接&quot;);
+                            socketChannel.close();
+                            continue;
+                        }
+
+                        byteBuffer.flip();
+
+                        byte[] bytes = byteBuffer.array();
+                        String msg = new String(bytes, &quot;utf-8&quot;);
+
+                        if (msg.equals(&quot;退出&quot;)) {
+//                          客户端主动断开连接
+                            System.out.println(&quot;客户端：&quot;
+                                    + socketChannel.socket().getInetAddress().getHostName() + &quot;:&quot;
+                                    + socketChannel.socket().getPort() + &quot; 已断开连接&quot;);
+                            socketChannel.close();
+                            continue;
+                        }
+
+                        System.out.println(
+                                socketChannel.socket().getInetAddress().getHostName() + &quot;:&quot;
+                                        + socketChannel.socket().getPort() + &quot;：&quot; + msg);
+
+                        if (selectionKey.isWritable()) {
+//                          System.out.println(&quot;可写&quot;);
+                            CharsetEncoder encoder = Charset.forName(&quot;UTF-8&quot;).newEncoder();
+                            try {
+                                socketChannel.write(encoder.encode(CharBuffer.wrap(&quot;server receive your message &quot;)));
+                            } catch (IOException e) {
+                                // TODO: handle exception
+                                System.out.println(&quot;写入io错误&quot;);
+                            }
+                        }
+
+
+                    }
+
+
+                }
+
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        NIOTCPServer niotcpServer = new NIOTCPServer(1024);
+    }
+}
+</span></span></span></code></pre><ul class="BulletedListWrapper"><li id="https://www.notion.so/6c11a2891d3b4137af64a827a2dafebc" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">TCP Client</span></span></li></ul><pre id="https://www.notion.so/450d1d25e0c24fc4ac42011c2a2eab2d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.nio.channel;
+
+/**
+ * @author : 夕
+ * @date : 2019/9/25
+ */
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
+import java.util.Iterator;
+
+public class NIOTCPClient extends Thread {
+
+    private CharsetDecoder decoder = Charset.forName(&quot;UTF-8&quot;).newDecoder();
+    private CharsetEncoder encoder = Charset.forName(&quot;UTF-8&quot;).newEncoder();
+    private Selector selector = null;
+    private SocketChannel socket = null;
+    private SelectionKey clientKey = null;
+
+    public NIOTCPClient() {
+        try {
+            selector = Selector.open();
+            socket = SocketChannel.open();
+            socket.configureBlocking(false);
+            clientKey = socket.register(selector, SelectionKey.OP_CONNECT);
+            InetSocketAddress ip = new InetSocketAddress(&quot;localhost&quot;, 1024);
+            socket.connect(ip);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                selector.select(1);
+                Iterator&lt;SelectionKey&gt; it = selector.selectedKeys().iterator();
+                while (it.hasNext()) {
+                    SelectionKey key = it.next();
+                    it.remove();
+                    if (key.isConnectable()) {
+                        SocketChannel channel = (SocketChannel) key.channel();
+                        if (channel.isConnectionPending()) {
+                            channel.finishConnect();
+                        }
+                        channel.register(selector, SelectionKey.OP_READ);
+                        System.out.println(&quot;连接服务器端成功！&quot;);
+                    } else if (key.isReadable()) {
+                        SocketChannel channel = (SocketChannel) key.channel();
+                        ByteBuffer buffer = ByteBuffer.allocate(50);
+                        try {
+                            channel.read(buffer);
+                        } catch (IOException e) {
+                            System.out.println(&quot;与服务器：&quot;
+                                    + channel.socket().getInetAddress().getHostName() + &quot;:&quot;
+                                    + channel.socket().getPort() + &quot;的连接已断开&quot;);
+                            channel.close();
+                            continue;//这一句是为了让你看到打印信息
+                        }
+                        buffer.flip();
+                        String msg = decoder.decode(buffer).toString();
+                        System.out.println(
+                                channel.socket().getInetAddress().getHostName() + &quot;:&quot;
+                                        + channel.socket().getPort() + &quot;：&quot; + msg);
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                selector.close();
+                socket.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    public void send(String msg) {
+        try {
+            SocketChannel client = (SocketChannel) clientKey.channel();
+            client.write(encoder.encode(CharBuffer.wrap(msg)));
+        } catch (Exception e) {
+            System.out.println(&quot;发送信息失败&quot;);
+            e.printStackTrace();
+        }
+    }
+
+    public void close() {
+        try {
+            selector.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        NIOTCPClient client = new NIOTCPClient();
+        client.start();
+        BufferedReader sin = new BufferedReader(new InputStreamReader(System.in));
+        try{
+            String readline;
+            while((readline = sin.readLine())!=null){
+                if(readline.equals(&quot;bye&quot;)){
+                    client.close();
+                    System.exit(0);
+                }
+                client.send(readline);
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+}
+
+</span></span></span></code></pre><h1 id="https://www.notion.so/f6e658edaf4243428e1bc39937c453ee" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--1"><a class="Anchor" href="#https://www.notion.so/f6e658edaf4243428e1bc39937c453ee"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Selector</span></span></h1><h2 id="https://www.notion.so/45cd151d4d7b4131bec5d4632e90ab1b" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/45cd151d4d7b4131bec5d4632e90ab1b"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Selector介绍</span></span></h2><div id="https://www.notion.so/2fc2db67741a404883ab180a618a8549" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Selector一般称为选择器,当然也可以翻译为多路复用器。它是Java NIO核心组件中的一个,用于检查一个或多个NIO Channel（通道）的状态是否处于可读、可写。如此可以实现单线程管理多个channel,也就是可以管理多个网络链接。 使用Selector的好处在于:使用更少的线程来就可以来处理通道了,相比使用多个线程,避免了线程上下文切换带来的开销。</span></span></p></div><div id="https://www.notion.so/f2241e1033ed46ffb5cf335972146328" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">并不是所有的Channel，都是可以被Selector 复用的。比如：FileChannel就不能被选择器复用。</span></span></p></div><div id="https://www.notion.so/aaab32ad813840e9a90c75c46db448ff" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">判断一个Channel 能被Selector 复用，有一个前提：判断他是否继承了一个抽象类SelectableChannel。如果继承了SelectableChannel，则可以被复用，否则不能。</span></span></p></div><div id="https://www.notion.so/d4b918a23a27472aa19629fda5ea95af" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">每个Channel的继承定义</strong></span></span></p></div><pre id="https://www.notion.so/6c654802eb234c2a9d447580c9c25801" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>
+public abstract class FileChannel
+    extends AbstractInterruptibleChannel
+    implements SeekableByteChannel, GatheringByteChannel,
+    ScatteringByteChannel
+
+public abstract class ServerSocketChannel
+    extends AbstractSelectableChannel
+    implements NetworkChannel
+
+public abstract class DatagramChannel
+    extends AbstractSelectableChannel
+    implements ByteChannel, ScatteringByteChannel,
+    GatheringByteChannel, MulticastChannel
+
+public abstract class SocketChannel
+    extends AbstractSelectableChannel
+    implements ByteChannel, ScatteringByteChannel,
+    GatheringByteChannel, NetworkChannel
+
+</span></span></span></code></pre><div id="https://www.notion.so/2471040c461c45edb495c4a26f0e9e2c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">上述继承关系，跟socket有关的类都继承自AbstractSelectableChannel，而AbstractSelectableChannel又继承自SelectableChannel</strong></span></span></p></div><pre id="https://www.notion.so/7aa5f3f01b2a496299f8b5f02b5aad76" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>
+public abstract class AbstractSelectableChannel
+    extends SelectableChannel
+
+</span></span></span></code></pre><div id="https://www.notion.so/aa308aee43304d11b9cf53c754178f1c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">SelectableChannel类提供了实现通道的可选择性所需要的公共方法。它是所有支持就绪检查的通道类的父类。所有socket通道，都继承了SelectableChannel类都是可选择的，包括从管道(Pipe)对象的中获得的通道。而FileChannel类，没有继承SelectableChannel，因此是不是可选通道。</span></span></p></div><div id="https://www.notion.so/a820e708bd464d13b7ebc1f25cbe9f1c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">通道和选择器不是一对一的关系。一个通道可以被注册到多个选择器上，但对每个选择器而言只能被注册一次。</span></span></p></div><div id="https://www.notion.so/d922180967b44ca4844773937f244b57" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">通道和选择器之间的关系，使用注册的方式完成。SelectableChannel可以被注册到Selector对象上，在注册的时候，需要指定通道的哪些操作，是Selector感兴趣的。</span></span></p></div><h2 id="https://www.notion.so/c935889e15cf4170a52a12f1fae93a2b" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/c935889e15cf4170a52a12f1fae93a2b"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Selector基本使用</span></span></h2><ol class="NumberedListWrapper"><li id="https://www.notion.so/7cd1b7f111514270bf0d5d1b1edeb44c" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">创建Selector</span></span></li></ol><pre id="https://www.notion.so/bdd59ff0e2a14ca09135e72b763e5292" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>Selector selector = Selector.open();
+</span></span></span></code></pre><ol class="NumberedListWrapper"><li id="https://www.notion.so/0680b6bd4ce94746b498ba6744909fca" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">Channel设置为非阻塞的，注册channel到Selector,并设置感兴趣的监听事件</span></span></li></ol><pre id="https://www.notion.so/c5b9e8b57237482a9e4969f42c4671f1" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>channel.configureBlocking(false);
+
+SelectionKey key = channel.register(selector, Selectionkey.OP_READ);
+</span></span></span></code></pre><h3 id="https://www.notion.so/dc94caee69d6435a8ccbeac5a5233f00" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/dc94caee69d6435a8ccbeac5a5233f00"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">监听事件</span></span></h3><div id="https://www.notion.so/9a19902efe9043869b6cbbde76abcb67" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">register() 方法的第二个参数。这是一个“ interest集合 ”，意思是在通过Selector监听Channel时对什么事件感兴趣。可以监听四种不同类型的事件：</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/28e69af40002421db597a20021a8cf0c" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">Connect</span></span></li><li id="https://www.notion.so/b45066ac3d5f4693befdb101d1b35679" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">Accept</span></span></li><li id="https://www.notion.so/fa6e6653889147dc87ae3778ac9fb574" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">Read</span></span></li><li id="https://www.notion.so/ae8d584e83104699b8e919042bdd4c46" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">Write</span></span></li></ul><div id="https://www.notion.so/0de18b5936194303b9181b3ef489c91e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">通道触发了一个事件意思是该事件已经就绪。比如：
+某个Channel成功连接到另一个服务器称为&quot;连接就绪&quot;。一个ServerSocketChannel准备好接收新进入的连接称为&quot;接收就绪&quot;。一个有数据可读的通道可以说是&quot;读就绪&quot;。等待写数据的通道可以说是&quot;写就绪&quot;。
+这四种事件用SelectionKey的四个常量来表示： SelectionKey.OP_CONNECT SelectionKey.OP_ACCEPT SelectionKey.OP_READ SelectionKey.OP_WRITE</span></span></p></div><div id="https://www.notion.so/1dda676227bb4256b9db781d3bb44379" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果你对不止一种事件感兴趣，使用或运算符即可，如下： int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;</span></span></p></div><h2 id="https://www.notion.so/11b117f62f414f158036ebee8656c6de" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/11b117f62f414f158036ebee8656c6de"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">SelectionKey</span></span></h2><div id="https://www.notion.so/9554ef6f09654c3bb073d7ef956997cd" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">一个SelectionKey键表示了一个特定的通道对象和一个特定的选择器对象之间的注册关系。</span></span></p></div><pre id="https://www.notion.so/bf4edee2ccd74777b8436dff65d71030" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>
+key.attachment(); //返回SelectionKey的attachment，attachment可以在注册channel的时候指定。
+key.channel(); // 返回该SelectionKey对应的channel。
+key.selector(); // 返回该SelectionKey对应的Selector。
+key.interestOps(); //返回代表需要Selector监控的IO操作的bit mask
+key.readyOps(); // 返回一个bit mask，代表在相应channel上可以进行的IO操作。
+</span></span></span></code></pre><h3 id="https://www.notion.so/56c833d7e84a49579cd0319b508e488a" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/56c833d7e84a49579cd0319b508e488a"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">key.interestOps()的使用</span></span></h3><pre id="https://www.notion.so/205ad82cc4c044b396c5a71a4f757a7d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>
+int interestSet = selectionKey.interestOps();
+boolean isInterestedInAccept = (interestSet &amp; SelectionKey.OP_ACCEPT) == SelectionKey.OP_ACCEPT；
+boolean isInterestedInConnect = interestSet &amp; SelectionKey.OP_CONNECT;
+boolean isInterestedInRead = interestSet &amp; SelectionKey.OP_READ;
+boolean isInterestedInWrite = interestSet &amp; SelectionKey.OP_WRITE;
+</span></span></span></code></pre><h3 id="https://www.notion.so/2555161677464491bcdc94e79cdb2d49" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/2555161677464491bcdc94e79cdb2d49"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">key.readyOps()的使用</span></span></h3><div id="https://www.notion.so/ee8e8ff679c744d1bf1cb1838da26944" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">ready 集合是通道已经准备就绪的操作的集合。JAVA中定义以下几个方法用来检查这些操作是否就绪.</span></span></p></div><pre id="https://www.notion.so/7d45a82ea5884d5aae6a94e07ef1f375" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>
+//创建ready集合的方法
+int readySet = selectionKey.readyOps();
+//检查这些操作是否就绪的方法
+boolean key.isAcceptable();//是否可读，是返回 true
+boolean key.isWritable()：//是否可写，是返回 true
+boolean key.isConnectable()：//是否可连接，是返回 true
+boolean key.isAcceptable()：//是否可接收，是返回 true
+</span></span></span></code></pre><h3 id="https://www.notion.so/0c84e7c9a4fc4d68946981ffce33a260" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/0c84e7c9a4fc4d68946981ffce33a260"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">SelectionKey附加信息</span></span></h3><div id="https://www.notion.so/53633ac0efe34ca898bf24b56cab273d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以将一个对象或者更多信息附着到SelectionKey上，这样就能方便的识别某个给定的通道。例如，可以附加 与通道一起使用的Buffer，或是包含聚集数据的某个对象。使用方法如下：</span></span></p></div><pre id="https://www.notion.so/3a445ce8276648e68c887e834c54dbb3" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>
+key.attach(theObject);
+Object attachedObj = key.attachment();
+
+</span></span></span></code></pre><div id="https://www.notion.so/cb53e0bc33444d72b7b39421f17650ef" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">还可以在用register()方法向Selector注册Channel的时候附加对象。如：</span></span></p></div><pre id="https://www.notion.so/a5f4f87464a24ed3be27c55f2e04a90d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>
+SelectionKey key = channel.register(selector, SelectionKey.OP_READ, theObject);
+
+</span></span></span></code></pre><h3 id="https://www.notion.so/e76ce72339544fb2b9d5d44bc674bbbe" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/e76ce72339544fb2b9d5d44bc674bbbe"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">select()方法的使用</span></span></h3><div id="https://www.notion.so/97099c2e3fee44dcba139eda9bc57036" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Selector维护的三种类型SelectionKey集合:</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/b3a54966e40e43abbc623dd4305f9569" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">已注册的键的集合(Registered key set)</span></span></li><li id="https://www.notion.so/2eeea81402b24c1a99b364bb27618af0" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">已选择的键的集合(Selected key set)</span></span></li><li id="https://www.notion.so/0eefbbb930554849a1c3e48e1f2e6768" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">已取消的键的集合(Cancelled key set)</span></span></li></ul><div id="https://www.notion.so/5b46ef5709524667a984ee17747ce8f1" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在刚初始化的Selector对象中，这三个集合都是空的。 通过Selector的select（）方法可以选择已经准备就绪的通道 （这些通道包含你感兴趣的的事件）。比如: 对读就绪的通道感兴趣，那么select（）方法就会返回读事件已经就绪的那些通道。</span></span></p></div><div id="https://www.notion.so/c8379d72816c4dc0883d631d38cfad0a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">下面是Selector几个重载的select()方法：</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/64103ee3c2ea411bae5e5977e863d177" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">int select()：阻塞到至少有一个通道在你注册的事件上就绪了。</span></span></li><li id="https://www.notion.so/d5a449eb82ea4113a4ab542466feb2d9" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">int select(long timeout)：和select()一样，但最长阻塞时间为timeout毫秒。</span></span></li><li id="https://www.notion.so/9b98a506f0624f7c980a52b84c9cd3ac" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">int selectNow()：非阻塞，只要有通道就绪就立刻返回。</span></span></li></ul><div id="https://www.notion.so/04d704bb2b79469c9a0e68cf98cf7576" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">select()方法返回的int值表示有多少通道已经就绪,是自上次调用select()方法后有多少通道变成就绪状态。之前在select（）调用时进入就绪的通道不会在本次调用中被记入，而在前一次select（）调用进入就绪但现在已经不在处于就绪的通道也不会被记入。</span></span></p></div><div id="https://www.notion.so/afd97fc84b724b74a51e7eecfea489e4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">停止选择的方法：</strong></span></span></p></div><div id="https://www.notion.so/7ee2d0f7c44d4a1aae303f02a6952fc8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">选择器执行选择的过程，系统底层会依次询问每个通道是否已经就绪，这个过程可能会造成调用线程进入阻塞状态,那么我们有以下两种方式可以唤醒在select（）方法中阻塞的线程。</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/c4705889c8554c4899a6bd1148d46fac" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">wakeup()方法 ：通过调用Selector对象的wakeup（）方法让处在阻塞状态的select()方法立刻返回 该方法使得选择器上的第一个还没有返回的选择操作立即返回。如果当前没有进行中的选择操作，那么下一次对select()方法的一次调用将立即返回。</span></span></li><li id="https://www.notion.so/10ead03959bc4fafb4e779ca905e2a55" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">close()方法 ：通过close（）方法关闭Selector 该方法使得任何一个在选择操作中阻塞的线程都被唤醒(类似wakeup()),同时使得注册到该Selector的所有Channel被注销，所有的键将被取消，但是Channel本身并不会关闭。</span></span></li></ul><h3 id="https://www.notion.so/95eaf6ef22ef47fb8dec8e08d1742854" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/95eaf6ef22ef47fb8dec8e08d1742854"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">模板代码</span></span></h3><pre id="https://www.notion.so/d66792dad8b74e06b1a7102a4e3af628" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>
+ServerSocketChannel ssc = ServerSocketChannel.open();
+ssc.socket().bind(new InetSocketAddress(&quot;localhost&quot;, 1024));
+ssc.configureBlocking(false);
+
+Selector selector = Selector.open();
+ssc.register(selector, SelectionKey.OP_ACCEPT);
+
+while(true) {
+    int readyNum = selector.select();
+    if (readyNum == 0) {
+        continue;
+    }
+
+    Set&lt;SelectionKey&gt; selectedKeys = selector.selectedKeys();
+    Iterator&lt;SelectionKey&gt; it = selectedKeys.iterator();
+
+    while(it.hasNext()) {
+        SelectionKey key = it.next();
+
+        if(key.isAcceptable()) {
+            // 接受连接
+        } else if (key.isReadable()) {
+            // 通道可读
+        } else if (key.isWritable()) {
+            // 通道可写
+        }
+
+        it.remove();
+    }
+}
+
+</span></span></span></code></pre><h1 id="https://www.notion.so/0c90a59eb3df45d38e9c185d5f43ef6e" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--1"><a class="Anchor" href="#https://www.notion.so/0c90a59eb3df45d38e9c185d5f43ef6e"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">参考文章</span></span></h1><ul class="BulletedListWrapper"><li id="https://www.notion.so/d985757178ab43da8a9f38e8bfbeddaa" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://github.com/wangzhiwubigdata/God-Of-BigData/blob/master/Java%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7%E5%A2%9E%E5%BC%BA/Java%20NIO%E4%B9%8BSelector(%E9%80%89%E6%8B%A9%E5%99%A8).md">https://github.com/wangzhiwubigdata/God-Of-BigData/blob/master/Java高级特性增强/Java NIO之Selector(选择器).md</a></span></span></li></ul></article>
+  <footer class="Footer">
+  <div>&copy; 夕的博客 2022</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>

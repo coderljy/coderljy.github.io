@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>JVM内存结构&nbsp;|&nbsp;夕的博客</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="JVM内存结构">
+  
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+    <h1 class="Header__Title">JVM内存结构</h1>
+    
+  </header>
+  <article id="https://www.notion.so/3cd85f4d95fd4c85876cf1dfece2cd1c" class="PageRoot"><div id="https://www.notion.so/19fd3c94acb74728b634caaf65cc491a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">经典JVM内存布局（JDK8以上）</strong></span></span></p></div><div id="https://www.notion.so/b344074db90e4fb4939b4cbc8d0c1754" class="Image Image--PageWidth"><figure><a href="#"><img src="#" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><h2 id="https://www.notion.so/a2b1229ed13d4229826c0783d59f6456" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/a2b1229ed13d4229826c0783d59f6456"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">一、Heap（堆区）</span></span></h2><div id="https://www.notion.so/4631659972a74b17bc2713c53ef60a19" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Heap存储着几乎所有的实例对象，堆由垃圾收集器自动回收，堆区由各个子线程共享使用。</strong></span><span class="SemanticString"> 通常情况下，它占用的空间是所有内存区域中最大的，同时也是OOM（Out Of Memory）故障最主要的发源地。</span></span></p></div><div id="https://www.notion.so/19eaf667475c4938943dcbe0bf6b41a3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">堆的内存空间既可以固定大小，也可以在运行时动态地调整。</span></span></p></div><div id="https://www.notion.so/9b9a5dff439d4f219baec38c68cdf58d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">通过如下参数设置初始值和最大值，比如-Xms256M -Xmx1024M （-X表示它是JVM运行参数，ms是memory start（最小堆容量）的简称，mx是memory max（最大堆容量）的简称）。由于服务器在不断运行过程中，堆空间不断地扩容与回缩，势必形成不必要的系统压力，所以在线上生产环境中，JVM的Xms Xmx 设置成一样大小，避免在GC调整堆大小时带来的额外压力。</span></span></p></div><div id="https://www.notion.so/a049aa1363344609aba08860f6400fd5" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">堆分为两大块：新生代和老年代。</strong></span><span class="SemanticString"> 对象产生之初在新生代，步入暮年进入老年代，但是老年代也接纳在新生代无法容纳的超大对象。</span></span></p></div><div id="https://www.notion.so/a0e74e1fa4a4458ca134e41028f93915" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">新生代 = 1个Eden区 + 2个Survivor区。</strong></span><span class="SemanticString"> 绝大部分对象在Eden区生成，当Eden区填满的时候，后触发Young Garbage Collection（YGC）。垃圾回收的时候在Eden区实现清除策略，没有被引用的对象则直接回收。仍然存活的对象会被移送到Survivor区。Survivor区被分为S0和S1两块内存空间，每次YGC的时候，他们将存活的对象复制到未使用那块空间，然后将当前正在使用的空间完全清除，交换两块空间的使用状态。如果YGC要移送的对象大于Survivor区容量的上限，则直接移交给老年代。</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">每个对象都有一个计数器，每次YGC都会加1。-XX:MaxTenuringThreshold参数能配置计数器的值到达某个阈值的时候，对象从新生代晋升到老年代。默认值是15，可以在Survivor区交换14次之后，晋升至老年代。</strong></span><span class="SemanticString"> 如果参数配置为1，那么从新生代的Eden区直接移至老年代。</span><span class="SemanticString">
+如果Survivor区无法放下，或者超大对象的阈值超过上限，则尝试在老年代进行分配；如果老年代也无法放下，则会触发Full Garbage Collection，即FGC。如果依然无法放下，则抛出OOM。可设置参数 -XX:+HeapDumpOnOutOfMemoryError,让JVM遇到OOM时输出堆内信息。</span></span></p></div><h2 id="https://www.notion.so/804674532a01405986f0ec5f50652927" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/804674532a01405986f0ec5f50652927"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">二、方法区</span></span></h2><ul class="BulletedListWrapper"><li id="https://www.notion.so/11367344bf464d8baca6fe74c0341ed9" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">方法区与Java堆一样，是各个线程共享的内存区域，它用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。</span></span></li><li id="https://www.notion.so/a8aa81c67e2c43309c9a1481ec8566a7" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">元空间的前身为永久代（Perm），在JDK8之后被淘汰，在JDK7及之前的版本中，只有Hotspot才有Perm区，译为永久代，它在启动的时候固定大小，很难进行调优，并且FGC时会移动类元信息。</span></span></li><li id="https://www.notion.so/0f4fb9ca4976433f884a3f58f91e4a21" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">区别于永久代，元空间在本地内存中分配。在JDK8里，Perm区中的所有内容中 字符串常量移至堆内存，其他内容包括类元信息，字段，静态属性，方法，常量等移动至元空间内。</span></span></li></ul><h2 id="https://www.notion.so/fcf90bc7668e4eef9413c6f413e64a30" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/fcf90bc7668e4eef9413c6f413e64a30"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">三、JVM Stack（虚拟机栈）</span></span></h2><ul class="BulletedListWrapper"><li id="https://www.notion.so/e0d2a4027d494d65914c7eecac52558d" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">java虚拟机栈是线程私有的，生命周期与线程相同。</span></span></li><li id="https://www.notion.so/92b953cfeab5463f8b4fd9f306d84128" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">虚拟机栈描述的是Java方法执行的内存模型：每个方法在执行的同时会创建一个栈帧用于存储局部变量表，操作数栈，动态连接，方法出口等信息。每个方法从调用到执行完成的过程，都对应着一个栈帧在虚拟机栈入栈到出栈的过程。</span></span></li><li id="https://www.notion.so/3b7eb5f9f54f46d18ef25f971c5053fb" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">Java虚拟机规范中对这个区域规定两种异常情况：</span></span><ol class="NumberedListWrapper"><li id="https://www.notion.so/f64c823274c44dfd87c67a30592bfc37" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">OutOfMemoryError（在虚拟机栈可以动态扩展的情况下，扩展时无法申请到足够的内存）；</span></span></li><li id="https://www.notion.so/ab067fedb3c24867bd81951999cec198" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">StackOverflowError（线程请求的栈深度 &gt; 虚拟机所允许的深度）；</span></span></li></ol><div id="https://www.notion.so/bb2d5da4f5654ce584f850e400d89180" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">虚拟机栈通过压栈和出栈的方式，对每个方法对应的活动栈帧进行运算处理，方法正常执行结束，肯定会跳转到另一个栈帧上。在执行过程中，如果出现异常，会进行异常回溯，返回地址通过异常处理表确定。</span></span></p></div></li></ul><div id="https://www.notion.so/48dd9fdee44945b8aad7583688fb49ad" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. 局部变量表</strong></span></span></p></div><div id="https://www.notion.so/c355511efa384f6cb057f4e98943e5f1" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">局部变量表是存放方法参数和局部变量的区域。相对于类属性变量的准备阶段和初始化阶段，局部变量没有准备阶段，必须显式化初始化。如果是非静态方法，则在index[0]位置上存储的是方法所属对象的实例引用，随后存储的是参数和局部变量。</span></span></p></div><div id="https://www.notion.so/b4b7b2cded6a421cb4db7b76e1e749f4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. 操作栈</strong></span></span></p></div><div id="https://www.notion.so/74fdf37e94074faa98c9285c88cf1089" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">操作栈是一个初始状态为空的桶式结构栈。JVM的执行引擎是基于栈的执行引擎，其中的栈指的就是操作栈。字节码指令集的定义都是基于栈类型的，栈的深度在方法元信息的stack属性中。</span></span></p></div><div id="https://www.notion.so/c0cd67fd04a64af09677c670b1408ad3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">3. 动态连接</strong></span></span></p></div><div id="https://www.notion.so/bab806ae8ccd40ac83e822770178d1df" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">每个栈帧中包含一个在常量池中对当前方法的引用，目的就是支持方法调用过程的动态连接。</span></span></p></div><div id="https://www.notion.so/e524d158ac604effb65be7ac076fdce0" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">4. 方法返回地址</strong></span></span></p></div><div id="https://www.notion.so/231d8f85d70047959d9f590624316dc6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">方法执行有两种退出情况：第一，正常退出；第二，异常退出。无论哪种退出情况，都将返回至方法当前被调用的位置。方法退出相当于弹出当前栈帧。</span></span></p></div><div id="https://www.notion.so/1fe5c91e48aa4813b62942ecc097449a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">退出的三种方式：</strong></span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/755f31ebaea145e0a5c4a59740701555" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">返回值压入上层调用栈帧</span></span></li><li id="https://www.notion.so/cd714712abbb4fd3ba40893f01b1c6d1" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">异常信息抛给能够处理的栈帧</span></span></li><li id="https://www.notion.so/3322f9916d654af3a59cb51dfcd903d2" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">PC计数器指向方法调用后的下一条指令</span></span></li></ul><h2 id="https://www.notion.so/f4c6e75cb63942979344664455b85644" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/f4c6e75cb63942979344664455b85644"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">四、本地方法栈</span></span></h2><ul class="BulletedListWrapper"><li id="https://www.notion.so/9f61dc6f1d2f48228e2c59b27494080c" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">本地方法栈描述的是Native方法执行的内存模型</span></span></li><li id="https://www.notion.so/e1e4b3727c114fa4b381f6bafba8f07d" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">可能抛出的异常：与 Java 虚拟机栈一样。</span></span></li></ul><div id="https://www.notion.so/10629dc9f6134f329b703cc20da793c4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">本地方法栈在JVM内存布局中，也是线程对象私有的，但是虚拟机栈“主内”，而本地方法栈“主外”。本地方法栈为Native方法服务。</span><span class="SemanticString">
+线程开始调用本地方法时，会进入一个不再受JVM约束的世界。本地方法可以通过JNI(Java Native Interface)来访问虚拟机运行时的数据区，甚至可以调用寄存器，具有和JVM相同的能力和权限。当大量本地方法出现时，势必会削弱JVM对系统的控制力，因为他的出错信息比较黑盒。对于内存不足的情况，本地方法栈还是会抛出native heap OutOfMemory。</span></span></p></div><h2 id="https://www.notion.so/f2aaaf577b424164909ae0303d9b5ebd" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/f2aaaf577b424164909ae0303d9b5ebd"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">五、程序计数器（Program Counter Register，PC）</span></span></h2><ul class="BulletedListWrapper"><li id="https://www.notion.so/7445e0433ac34dcf8ed1f30fd03b30f1" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">程序计数器是一块较小的内存空间，可以看做是当前线程所执行的字节码的行号指示器。</span></span></li><li id="https://www.notion.so/b2ff8ddcbe894fadbe90bc6be79a6fb7" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支，循环，跳转，异常处理，线程恢复等基础功能都需要依赖这个计数器来完成。</span></span></li><li id="https://www.notion.so/ddd162b8430545b59b0e26521d22a732" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">JVM多线程是通过线程轮流切换并分配处理器执行时间的方式来实现的，所以，为了线程切换后能恢复到正确的执行位置，每条线程都需要一个独立的程序计数器，各条线程互不影响，独立存储，线程私有。</span></span></li><li id="https://www.notion.so/4ecb75d1004e4736be9e61503a957ba3" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">线程执行Java方法，计数器记录的是正在执行的虚拟机字节码指令的地址。如果执行Native方法，这个计数器值为空（Undefined）。</span></span></li><li id="https://www.notion.so/eede002ed8c64ed3b2ac4a358899cae5" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">此区域是唯一一个JVM规范中没有规定任何OOM（OutOfMemoryError）情况的区域。</span></span><div id="https://www.notion.so/f9eb0909dbde42e3857cf83903979aea" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">每个线程创建后，都会产生自己的程序计数器和栈帧，程序计数器都用来存放执行指令的偏移量和行号指示器等，线程执行和恢复都要依赖程序计数器。程序计数器在各个线程之间互不影响，此区域也不会发生内存溢出异常。</span></span></p></div></li></ul><div id="https://www.notion.so/1d7281ce621947beb0a1f9e0f876da19" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">从线程共享的角度来看，堆和元空间是所有线程共享的，而虚拟机栈、本地方法栈、程序计数器是线程内部私有的。</strong></span></span></p></div></article>
+  <footer class="Footer">
+  <div>&copy; 夕的博客 2022</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>

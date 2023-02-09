@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>Netty详解&nbsp;|&nbsp;夕的博客</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="Netty详解">
+  
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+    <h1 class="Header__Title">Netty详解</h1>
+    
+  </header>
+  <article id="https://www.notion.so/1f3a242efa7a4ef5be26682a4160864d" class="PageRoot"><h2 id="https://www.notion.so/3cd9f3efac3344a2a2c547899c1a6366" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/3cd9f3efac3344a2a2c547899c1a6366"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">select poll epoll</span></span></h2><div id="https://www.notion.so/6be4e534b6a5465fa1acd44caf892940" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">epoll跟select都能提供多路I/O复用的解决方案。在现在的Linux内核里有都能够支持，其中epoll是Linux所特有，而select则应该是POSIX所规定，一般操作系统均有实现</span></span></p></div><h3 id="https://www.notion.so/40594e02794248db8272baf8e62b9456" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/40594e02794248db8272baf8e62b9456"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">select</span></span></h3><div id="https://www.notion.so/cd2bf1b975ce49459c6848717476f1ce" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">时间复杂度 :  大于等于 O（n）</span></span></p></div><div id="https://www.notion.so/aacc4e5acce0478d81751290a6f371e6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">它仅知道，有IO时间发生，却不知道是哪几个流（可能有一个，多个，甚至全部），我们只能无差别轮询所有流，找出能读取数据的流，或者写入数据的流，对他们进行操作。所以select具有O(n)的无差别轮询复杂度，同时处理的流越多，无差别轮询时间越长。</span></span></p></div><div id="https://www.notion.so/551d767bd693463f9fe8a5f42df01815" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">select本质</strong></span><span class="SemanticString">上是通过设置或者检查存放fd标志位的数据结构来进行下一步处理。这样所带来的缺点是：</span></span></p></div><div id="https://www.notion.so/ca2d5df9a27547829e838c9bd84034c1" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">1、 单个进程可监视的fd数量被限制，即能监听端口的大小有限。</span></span></p></div><div id="https://www.notion.so/d9fa49e6f7d449dbb63981a819f83250" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">一般来说这个数目和系统内存关系很大，具体数目可以cat /proc/sys/fs/file-max察看。32位机默认是1024个。64位机默认是2048.</span></span></p></div><div id="https://www.notion.so/42e6de00c0174b9188e60b9819b23ce7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">2、 对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低：</span></span></p></div><div id="https://www.notion.so/314ca4e7e3d948828e9d3129f562a7db" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">    当套接字比较多的时候，每次select()都要通过遍历FD_SETSIZE个Socket来完成调度,不管哪个Socket是活跃的,都遍历一遍。这会浪费很多CPU时间。如果能给套接字注册某个回调函数，当他们活跃时，自动完成相关操作，那就避免了轮询，这正是epoll与kqueue做的。</span></span></p></div><div id="https://www.notion.so/d4de71587780403c8ad8b8566514a200" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">3、需要维护一个用来存放大量fd的数据结构，这样会使得用户空间和内核空间在传递该结构时复制开销大</span></span></p></div><h3 id="https://www.notion.so/9ac8bd7e05ec4efb901286ba26780bf0" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/9ac8bd7e05ec4efb901286ba26780bf0"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">poll</span></span></h3><div id="https://www.notion.so/b8cd4ad74c1e4b3c8eb5bfcb6e267d32" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">时间复杂度：大于等于 O(n)</span></span></p></div><div id="https://www.notion.so/19389a0599374e21877fe069e3ff953f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">poll本质和select没有区别，它将用户传入的数据拷贝到内核空间，然后查询每个fd对应的设备状态，但是它没有最大连接数的限制，原因是它基于链表来存储。</span></span></p></div><div id="https://www.notion.so/ac9f0c15542e436cad8069f00c9aa223" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">poll本质上和select没有区别，它将用户传入的数组拷贝到内核空间，然后查询每个fd对应的设备状态，如果设备就绪则在设备等待队列中加入一项并继续遍历，如果遍历完所有fd后没有发现就绪设备，则挂起当前进程，直到设备就绪或者主动超时，被唤醒后它又要再次遍历fd。这个过程经历了多次无谓的遍历。</span></span></p></div><div id="https://www.notion.so/aaa811b488dd407f80b8c22f5a63e886" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">它没有最大连接数的限制</strong></span><span class="SemanticString">，原因是它是基于链表来存储的，但是同样有一个缺点：</span></span></p></div><div id="https://www.notion.so/15583a5d8f7444f9bf303d0d6a8f6140" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">1、大量的fd的数组被整体复制于用户态和内核地址空间之间，而不管这样的复制是不是有意义。</span></span></p></div><div id="https://www.notion.so/24e3f401234d4e2981715c28228fc1bf" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">2、poll还有一个特点是“</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">水平触发</strong></span><span class="SemanticString">”，如果报告了fd后，没有被处理，那么下次poll时会再次报告该fd。</span></span></p></div><h3 id="https://www.notion.so/768bddc2ba934d7396d7a384ff0c9087" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/768bddc2ba934d7396d7a384ff0c9087"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">epoll</span></span></h3><div id="https://www.notion.so/59b94fff3b964cc7969b7a536e4d4871" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">时间复杂度：O(1)</span></span></p></div><div id="https://www.notion.so/707b28696e5945169e58973f7b17fde5" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">epoll可以理解为 event poll,不同于忙轮询和无差别轮询，epoll会把哪个流发生了怎样的IO事件通知我们。所以说epoll实际上是事件驱动（每个事件关联fd）的，此时我们对这些流的操作时无意义的。</span></span></p></div><div id="https://www.notion.so/60035696e774428fb9ea46329db7ee67" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">epoll有EPOLLLT和EPOLLET两种触发模式，LT是默认的模式，ET是“高速”模式。LT模式下，只要这个fd还有数据可读，每次 epoll_wait都会返回它的事件，提醒用户程序去操作，而在ET（边缘触发）模式中，它只会提示一次，直到下次再有数据流入之前都不会再提示了，无 论fd中是否还有数据可读。所以在ET模式下，read一个fd的时候一定要把它的buffer读光，也就是说一直读到read的返回值小于请求值，或者 遇到EAGAIN错误。还有一个特点是，epoll使用“事件”的就绪通知方式，通过epoll_ctl注册fd，一旦该fd就绪，内核就会采用类似callback的回调机制来激活该fd，epoll_wait便可以收到通知。</span></span></p></div><div id="https://www.notion.so/eccbd4108ecf4e2c872b551c45a819e5" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">epoll为什么要有EPOLLET触发模式？</strong></span></span></p></div><div id="https://www.notion.so/a228dd9d63194deab689aff8091406af" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果采用EPOLLLT模式的话，系统中一旦有大量你不需要读写的就绪文件描述符，它们每次调用epoll_wait都会返回，这样会大大降低处理程序检索自己关心的就绪文件描述符的效率.。而采用EPOLLET这种边沿触发模式的话，当被监控的文件描述符上有可读写事件发生时，epoll_wait()会通知处理程序去读写。如果这次没有把数据全部读写完(如读写缓冲区太小)，那么下次调用epoll_wait()时，它不会通知你，也就是它只会通知你一次，直到该文件描述符上出现第二次可读写事件才会通知你！！！</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">这种模式比水平触发效率高，系统不会充斥大量你不关心的就绪文件描述符</strong></span></span></p></div><div id="https://www.notion.so/7a54ccd1aeb644e98cf846cd0a5baee1" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">epoll的优点：</strong></span></span></p></div><div id="https://www.notion.so/e185515da9354591ad9dbdba0d5d84ed" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">1、</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">没有最大并发连接的限制，能打开的FD的上限远大于1024（1G的内存上能监听约10万个端口）</strong></span><span class="SemanticString">；
+</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2、效率提升，不是轮询的方式，不会随着FD数目的增加效率下降。只有活跃可用的FD才会调用callback函数；</strong></span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">即Epoll最大的优点就在于它只管你“活跃”的连接，而跟连接总数无关，因此在实际的网络环境中，Epoll的效率就会远远高于select和poll。</strong></span></span></p></div><div id="https://www.notion.so/1eb39e067957403b99f7f4cf8ea4bb6f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">3、 内存拷贝，利用mmap()文件映射内存加速与内核空间的消息传递；即epoll使用mmap减少复制开销。</span></span></p></div><div id="https://www.notion.so/be5ee136b0ef4ba8987479e690b2fb39" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">总结：</strong></span></span></p></div><div id="https://www.notion.so/81c5d2ef0a20406d9b90d41a3315e61a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">综上，在选择select，poll，epoll时要根据具体的使用场合以及这三种方式的自身特点。</strong></span></span></p></div><div id="https://www.notion.so/82197285ccdf4e2186d970d2456ee003" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1、表面上看epoll的性能最好，但是在连接数少并且连接都十分活跃的情况下，select和poll的性能可能比epoll好，毕竟epoll的通知机制需要很多函数回调。</strong></span></span></p></div><div id="https://www.notion.so/0c3a9ebbf90e45abb956caccd9f39176" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2、select低效是因为每次它都需要轮询。但低效也是相对的，视情况而定，也可通过良好的设计改善</strong></span></span></p></div><div id="https://www.notion.so/c638e5b98ea0485cbc6db2b0fbb5723e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">（1）select，poll实现需要自己不断轮询所有fd集合，直到设备就绪，期间可能要睡眠和唤醒多次交替。而epoll其实也需要调用epoll_wait不断轮询就绪链表，期间也可能多次睡眠和唤醒交替，但是它是设备就绪时，调用回调函数，把就绪fd放入就绪链表中，并唤醒在epoll_wait中进入睡眠的进程。虽然都要睡眠和交替，但是select和poll在“醒着”的时候要遍历整个fd集合，而epoll在“醒着”的时候只要判断一下就绪链表是否为空就行了，这节省了大量的CPU时间。这就是回调机制带来的性能提升。</span></span></p></div><div id="https://www.notion.so/a2ede1666c9440a8ade2f6705ef28895" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">（2）select，poll每次调用都要把fd集合从用户态往内核态拷贝一次，并且要把current往设备等待队列中挂一次，而epoll只要一次拷贝，而且把current往等待队列上挂也只挂一次（在epoll_wait的开始，注意这里的等待队列并不是设备等待队列，只是一个epoll内部定义的等待队列）。这也能节省不少的开销。</span></span></p></div><h2 id="https://www.notion.so/aa73d4a7795a412cac952c85846a34d0" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/aa73d4a7795a412cac952c85846a34d0"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">netty中的水平触发和边缘触发</span></span></h2><div id="https://www.notion.so/7f72fe0b20ee4989b471d1ee23b08336" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在非阻塞IO中，通过Selector选出准备好的fd进行操作。有两种模式，一是水平触发（LT），二是边缘触发（ET）。</span></span></p></div><div id="https://www.notion.so/5f7e70ad89904c089c8d4a9b6ea15df8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在LT模式下，只要某个fd还有数据没读完，那么下次轮询还会被选出。而在ET模式下，只有fd状态发生改变后，该fd才会被再次选出。ET模式的特殊性，使在ET模式下的一次轮询必须处理完本次轮询出的fd的所有数据，否则该fd将不会在下次轮询中被选出。</span></span></p></div><div id="https://www.notion.so/f7f7b106c7d540e2a81bdb2bbba16df3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">在Netty中，NioChannel体系是水平触发，EpollChannel体系是边缘触发。</strong></span></span></p></div><h3 id="https://www.notion.so/0f0cae6976334941a3258d05369b7c56" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/0f0cae6976334941a3258d05369b7c56"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">NioServerSocketChannel 水平触发</span></span></h3><div id="https://www.notion.so/760979fc1471497cae2d26b46a6f0ee7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">从源码中，NioServerSocketChannel对一次轮询出的SelectionKey.OP_ACCEPT的处理来看：</span></span></p></div><div id="https://www.notion.so/e15e529be26e436b9f28462c38db3e48" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">AbstractNioMessageChannel#read()</span></span></p></div><pre id="https://www.notion.so/6df2bae87df746fc86b9e0b4c1f85730" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>public void read() {
+    assert eventLoop().inEventLoop();
+    final ChannelConfig config = config();
+    final ChannelPipeline pipeline = pipeline();
+    final RecvByteBufAllocator.Handle allocHandle = unsafe().recvBufAllocHandle();
+    allocHandle.reset(config);
+
+    boolean closed = false;
+    Throwable exception = null;
+    try {
+        try {
+            do {
+                int localRead = doReadMessages(readBuf);
+                if (localRead == 0) {
+                    break;
+                }
+                if (localRead &lt; 0) {
+                    closed = true;
+                    break;
+                }
+
+                allocHandle.incMessagesRead(localRead);
+            } while (allocHandle.continueReading());
+        } catch (Throwable t) {
+            exception = t;
+        }
+
+        int size = readBuf.size();
+        for (int i = 0; i &lt; size; i ++) {
+            readPending = false;
+            pipeline.fireChannelRead(readBuf.get(i));
+        }
+        readBuf.clear();
+        allocHandle.readComplete();
+        pipeline.fireChannelReadComplete();
+
+        if (exception != null) {
+            closed = closeOnReadError(exception);
+
+            pipeline.fireExceptionCaught(exception);
+        }
+
+        if (closed) {
+            inputShutdown = true;
+            if (isOpen()) {
+                close(voidPromise());
+            }
+        }
+    } finally {
+        if (!readPending &amp;&amp; !config.isAutoRead()) {
+            removeReadOp();
+        }
+    }
+}
+</span></span></span></code></pre><div id="https://www.notion.so/71f751e75c254cb28e0779818e2b50f0" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">1、使用allocHandle维护一个大小合适的缓冲区</span></span></p></div><div id="https://www.notion.so/bd86a25bec914eb5b6089c817c441af3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">2、循环调用doReadMessage(readBuf)，该方法内部是调用java nio中的	serverSocketChannel.accept() 获得SocketChannel，并包装成netty中的NioSocketChannel，然后放入readBuf。</span></span></p></div><div id="https://www.notion.so/c4722cfeaeeb4a26b2f364d8cf25041c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">3、pipeline.fireChannelRead(readBuf.get(i))，让每一个NioSocketChannel经过NioServerSocketChannel的handler链进行处理。</span></span></p></div><div id="https://www.notion.so/3ac7f0546f8e4680a0e3977ef9435c6a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">4、finally{...}中，调用removeReadOp()，移除该Channel的SelectionKey中的OP_ACCEPT值</span></span></p></div><div id="https://www.notion.so/f2c57b5685c848e594312fd458e51a58" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">水平触发主要体现在4，Netty为了使每次轮询负载均衡，不至于一次轮询要的readBuf内存过大，所以限制了readBuf大小，导致每次轮询所能够处理的数据有限，这就可能使一次轮询不回读完fd中的数据。在finally{...}中移除了OP_ACCEPT是因为他工作在LT触发模式下，即使移除了，只要fd中还有数据，下次轮询仍然会把该fd选出进行处理。</span></span></p></div><h3 id="https://www.notion.so/82563860ab734264b85defd71f19753e" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/82563860ab734264b85defd71f19753e"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">EpollChannel 边缘触发</span></span></h3><div id="https://www.notion.so/c815e745c18146a2895dbabc9c76142f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">AbstractEpollServerChannel#epollInReady()</span></span></p></div><pre id="https://www.notion.so/81644ede795b450b9b04e45de2ebc656" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>@Override
+void epollInReady() {
+    assert eventLoop().inEventLoop();
+    final ChannelConfig config = config();
+    if (shouldBreakEpollInReady(config)) {
+        clearEpollIn0();
+        return;
+    }
+    final EpollRecvByteAllocatorHandle allocHandle = recvBufAllocHandle();
+    allocHandle.edgeTriggered(isFlagSet(Native.EPOLLET));
+
+    final ChannelPipeline pipeline = pipeline();
+    allocHandle.reset(config);
+    allocHandle.attemptedBytesRead(1);
+    epollInBefore();
+
+    Throwable exception = null;
+    try {
+        try {
+            do {
+                allocHandle.lastBytesRead(socket.accept(acceptedAddress));
+                if (allocHandle.lastBytesRead() == -1) {
+                    break;
+                }
+                allocHandle.incMessagesRead(1);
+
+                readPending = false;
+                pipeline.fireChannelRead(newChildChannel(allocHandle.lastBytesRead(), acceptedAddress, 1,
+                                                         acceptedAddress[0]));
+            } while (allocHandle.continueReading());
+        } catch (Throwable t) {
+            exception = t;
+        }
+        allocHandle.readComplete();
+        pipeline.fireChannelReadComplete();
+
+        if (exception != null) {
+            pipeline.fireExceptionCaught(exception);
+        }
+    } finally {
+        epollInFinally(config);
+    }
+}
+}
+</span></span></span></code></pre><div id="https://www.notion.so/1617286b23e94ee3b1b4a7896e7e2be8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">epoll同样采用了allocHandle来使每次轮询负载均衡，不同的是finally{...}移除SeletionKey中该事件的处理。</strong></span></span></p></div><pre id="https://www.notion.so/e28b2bbcf5df4e33824399f4d6ff20e6" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>final void epollInFinally(ChannelConfig config) {
+    maybeMoreDataToRead = allocHandle.isEdgeTriggered() &amp;&amp; allocHandle.maybeMoreDataToRead();
+    if (!readPending &amp;&amp; !config.isAutoRead()) {
+        clearEpollIn();
+    } else if (readPending &amp;&amp; maybeMoreDataToRead) {
+        executeEpollInReadyRunnable(config);
+    }
+}
+</span></span></span></code></pre><div id="https://www.notion.so/0294e61820b840ecb7d921bcf252c06b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果fd中仍有未读完的数据，必须调用executeEpollReadRunnable(config)，自己触发EPOLLIN event，否则会因为没有读完数据导致socket不可用。</span></span></p></div><div id="https://www.notion.so/5a4b75992fc749d7824e45fdff08067d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">总结：
+Netty为了使每次轮询负载均衡，限制了每次从fd中读取数据的最大值，造成一次读事件处理并不会读完fd中的所有数据。在NioServerSocketChannel中，由于其工作在LT模式下，所以不需要做特殊处理，在处理完一个事件后直接从SelectionKey中移除该事件即可，如果有未读完的数据，下次轮询仍会获得该事件。而在EpollServerSocketChannel中，由于其工作在ET模式下，如果一次事件处理不把数据读完，需要手动地触发一次事件作为补偿，否则下次轮询将不会有触发的事件。</span></span></p></div><h2 id="https://www.notion.so/bae9fce1110942da937220f4b9e7c18e" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/bae9fce1110942da937220f4b9e7c18e"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">netty解决nio的空轮训bug</span></span></h2><ul class="BulletedListWrapper"><li id="https://www.notion.so/9fa1bc14d221473e836938f47630638a" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">对Selector的select操作周期进行统计，每完成一次空的select操作进行一次计数，</span></span></li><li id="https://www.notion.so/3f810e0a2c1d4db3ad0e0868d8843404" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">若在某个周期内连续发生N次空轮询（默认512 -&gt; SELECTOR_AUTO_REBUILD_THRESHOLD），则触发了空轮训bug。</span></span></li><li id="https://www.notion.so/611370e3e81f4821a7f5e2632a3d1ef5" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">重建Selector，判断是否是其他线程发起的重建请求，若不是则将原SocketChannel从旧的Selector上去除注册，重新注册到新的Selector上，并将原来的Selector关闭。</span></span></li></ul><div id="https://www.notion.so/3c82a2ee43b346f892489c997df08b6e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">io.netty.channel.nio.NioEventLoop类当中的select()方法中。</strong></span></span></p></div><pre id="https://www.notion.so/3990f640eace4dfbb52819eed8ceafb4" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>long time = System.nanoTime();
+if (time - TimeUnit.MILLISECONDS.toNanos(timeoutMillis) &gt;= currentTimeNanos) {
+    // timeoutMillis elapsed without anything selected.
+    selectCnt = 1;
+} else if (SELECTOR_AUTO_REBUILD_THRESHOLD &gt; 0 &amp;&amp;
+           selectCnt &gt;= SELECTOR_AUTO_REBUILD_THRESHOLD) {
+    // The code exists in an extra method to ensure the method is not too big to inline as this
+    // branch is not very likely to get hit very frequently.
+    selector = selectRebuildSelector(selectCnt);
+    selectCnt = 1;
+    break;
+}
+</span></span></span></code></pre><h2 id="https://www.notion.so/813c5109c2174cc4b68d1dd7686e4d08" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/813c5109c2174cc4b68d1dd7686e4d08"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">netty组件关系</span></span></h2><ul class="BulletedListWrapper"><li id="https://www.notion.so/089b76ba27ea405aadba84a75ea16e33" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">一个 EventLoopGroup 包含一个或多个 EventLoop。</span></span></li><li id="https://www.notion.so/5c987de0a2d742929642e7a7768abc9e" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">一个 EventLoop 在它的生命周期内只能与一个Thread绑定。</span></span></li><li id="https://www.notion.so/4ce0827b9f514deb91ce6ff28877bc97" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">所有有 EnventLoop 处理的 I/O 事件都将在它专有的 Thread 上被处理。</span></span></li><li id="https://www.notion.so/42df6f10a89d4badbc624d8d49c14d91" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">一个 Channel 在它的生命周期内只能注册与一个 EventLoop。</span></span></li><li id="https://www.notion.so/2e6f7e98906c4836b278d939afa7f448" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">一个 EventLoop 可被分配至一个或多个 Channel 。</span></span></li><li id="https://www.notion.so/96475efa3dd34ef183b4e10e9c2622ec" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">每一个新创建的Channel 都将会被分配一个新的ChannelPipeline</span></span></li></ul></article>
+  <footer class="Footer">
+  <div>&copy; 夕的博客 2022</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>

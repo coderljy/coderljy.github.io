@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>设计模式&nbsp;|&nbsp;夕的博客</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="设计模式">
+  
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+    <h1 class="Header__Title">设计模式</h1>
+    
+  </header>
+  <article id="https://www.notion.so/1499e0a7e97d4390a8ca5adddd954783" class="PageRoot"><h2 id="https://www.notion.so/1b5e30e3981b4a009950e0e526150e89" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/1b5e30e3981b4a009950e0e526150e89"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">代理模式（proxy模式）</span></span></h2><h3 id="https://www.notion.so/ed2ec2f103f64bfab4f63cfe1dae99e6" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/ed2ec2f103f64bfab4f63cfe1dae99e6"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">简介</span></span></h3><ol class="NumberedListWrapper"><li id="https://www.notion.so/406579cc893b4be188ceca32c133fa46" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">代理模式：为一个对象提供一个替身，以控制对这个对象的访问。即通过代理对象访问目标对象。</span></span></li><li id="https://www.notion.so/4f360761d2304e2a912af8d713a265b9" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">好处：可以在目标对象的基础上，增强额外的功能操作，即拓展目标对象的功能。</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">只在必要时生成实例</strong></span></span></li><li id="https://www.notion.so/fe1a5976b5bc4b9dbce611144f399172" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">被代理的对象可以是远程对象，创建开销大的对象，需要安全控制的对象</span></span></li><li id="https://www.notion.so/aac6d0f874a94c47a449518bc30b4fec" class="NumberedList" value="4"><span class="SemanticStringArray"><span class="SemanticString">代理模式有不同形式，主要有三种 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">静态代理，动态代理（JDK代理，接口代理）和 Cglib代理（可以在内存中动态的创建对象，而不需要实现接口，属于动态代理的范畴）。</strong></span></span></li></ol><h3 id="https://www.notion.so/f9474138c56a49a997bdbf4d82af1726" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/f9474138c56a49a997bdbf4d82af1726"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">静态代理</span></span></h3><div id="https://www.notion.so/c2ea3929e8c445d4a83f096c8636e45d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">静态代理在使用时，需要定义接口或者父类，被代理对象（即目标对象）与代理对象实现相同的接口或者是继承相同父类。</strong></span></span></p></div><div id="https://www.notion.so/ad1b9eeeea154ee1a518e04760b05ceb" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">应用实例：</strong></span></span></p></div><pre id="https://www.notion.so/0936610f31e74944b3105d79ebf5bdca" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.staticproxy.teacherdemo;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/8
+ */
+public interface Teacherable {
+    public void Teach();
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/626376ada51e4c94b79913b270e7f9d8" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.staticproxy.teacherdemo;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/8
+ */
+public class Teach implements Teacherable {
+
+    @Override
+    public void Teach() {
+        System.out.println(&quot;老师授课中&quot;);
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/34bae25dddf743cfa75df5b75c756450" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.staticproxy.teacherdemo;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/8
+ */
+
+//代理对象，静态代理
+public class TeachProxy implements Teacherable{
+
+    private Teacherable target; //  目标对象，通过接口聚合
+
+    //构造器
+    public TeachProxy(Teacherable target){
+        this.target = target;
+    }
+
+    @Override
+    public void Teach() {
+        System.out.println(&quot;代理开始 完成某些操作&quot;);
+        target.Teach();
+        System.out.println(&quot;代理结束。。。。&quot;);
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/048258c0c26c4704a3a93055a5b431f1" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.staticproxy.teacherdemo;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/8
+ */
+public class Client {
+    /**
+     * 创建Teach对象
+     * 创建TeachProxy代理对象
+     * 将Teach对象，交给TeachProxy对象执行方法
+     * @param args
+     */
+    public static void main(String[] args) {
+        //创建目标对象，被代理对象
+        Teach teach = new Teach();
+        //创建代理对象，同时将被代理对象传递给代理对象
+        TeachProxy teachProxy = new TeachProxy(teach);
+        //通过代理对象，调用代理对象的方法
+        //执行的是代理对象的方法，代理对象再去调用目标对象的方法
+        teachProxy.Teach();
+    }
+}
+</span></span></span></code></pre><h3 id="https://www.notion.so/e3f819c9276346269402cb73dbb96472" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/e3f819c9276346269402cb73dbb96472"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">优缺点</span></span></h3><ol class="NumberedListWrapper"><li id="https://www.notion.so/3e559f6e04414e5b828124c72c758038" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">优点：在不修改目标对象的功能前提下，能通过代理对象对目标对象功能拓展</span></span></li><li id="https://www.notion.so/2c4b1e3328ec4f0b8d89a41c93f01d41" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">缺点：因为代理对象需要与目标对象实现一样的接口，所以会有很多代理类</span></span></li><li id="https://www.notion.so/561e7c84217f4c97a1fd1caf676d0ce3" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">一旦接口增加方法，目标对象与代理对象都要维护</span></span></li></ol><h3 id="https://www.notion.so/8251ffa238cb4b4f99bb3b0fbc8f8dde" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/8251ffa238cb4b4f99bb3b0fbc8f8dde"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">动态代理</span></span></h3><ol class="NumberedListWrapper"><li id="https://www.notion.so/a6fb496d85844f04b00a2b7adce84a6d" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">代理对象，不需要实现接口，但是目标对象要实现接口，否则不能用动态代理</span></span></li><li id="https://www.notion.so/2d2b490b6b61480094ae19c9fe028aa6" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">代理对象的生成，是利用JDK的API，动态在内存中构建代理对象</span></span></li><li id="https://www.notion.so/94edb19b649a41e7bb0d7761d941600c" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">动态代理也叫作：JDK代理，接口代理</span></span></li></ol><div id="https://www.notion.so/fd8d22daefff48d7b1416465288ce0c9" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">JDK生成代理对象的API：</strong></span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/e137a6dca2b74272b62879522d3cd7c6" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">代理类所在包：java.lang.reflect.Proxy</span></span></li><li id="https://www.notion.so/3e25ffa416014cd099b26cd342b6bda5" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">JDK实现代理只需要使用newProxyInstance方法：</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">static Object newProxyInstance(ClassLoader loader,Class&lt;?&gt;[] interfaces,InvocationHandler h)</strong></span></span></li></ol><div id="https://www.notion.so/b9a20754cf7b48f88cbf3e599f35124d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">应用实例：</strong></span></span></p></div><pre id="https://www.notion.so/199c7f4a2b7f455d92f4981f51b02a5f" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.dynamicproxy;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/8
+ */
+public interface Teacherable {
+    public void Teach(String name);
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/e686777b386e4ebe9b0509e241c5ecb7" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.dynamicproxy;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/8
+ */
+public class Teacher implements Teacherable {
+    @Override
+    public void Teach(String name) {
+        System.out.println(name + &quot; : 正在授课&quot;);
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/127a980a726d4e50a7060a91980e1253" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.dynamicproxy;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/8
+ */
+public class ProxyFactory {
+
+    //维护一个目标对象，Object
+    private Object target;
+
+    //构造器，对target进行初始化
+    public ProxyFactory(Object target) {
+        this.target = target;
+    }
+
+    //给目标对象，生成一个代理对象
+    public Object getProxyInstance() {
+        /**
+         * public static Object newProxyInstance(ClassLoader loader,
+         *                                       Class&lt;?&gt;[] interfaces,
+         *                                       InvocationHandler h)
+         * 1. ClassLoad loader : 指定当前目标对象使用的类加载器，获取加载器的方法固定
+         * 2. Class&lt;?&gt;[] interfaces：目标对象实现的接口类型，使用泛型方法确认类型
+         * 3. InvocationHandler h : 事件处理，执行目标对象的方法时，会触发事件处理器方法，（会把当前执行的目标对象作为参数传入）
+         */
+        return Proxy.newProxyInstance(target.getClass().getClassLoader(),
+                target.getClass().getInterfaces(),
+                new InvocationHandler() {
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        System.out.println(&quot;JDK 代理开始&quot;);
+                        //反射机制调用目标对象的方法
+                        Object returnVal = method.invoke(target, args);
+                        System.out.println(&quot;JDK 代理结束&quot;);
+                        return returnVal;
+                    }
+                });
+
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/09851cb1a02844ac9e24e5f8022cffb7" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.dynamicproxy;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/8
+ */
+public class Client {
+
+    public static void main(String[] args) {
+        //创建目标对象
+        Teacherable target = new Teacher();
+
+        //给目标对象，创建代理对象
+        Teacherable proxyInstance = (Teacherable) new ProxyFactory(target).getProxyInstance();
+        //class com.sun.proxy.$Proxy0  内存中动态生成了代理对象
+        System.out.println(proxyInstance.getClass());
+        //通过代理对象调用目标对象的方法
+        proxyInstance.Teach(&quot;ljy&quot;);
+
+    }
+}
+</span></span></span></code></pre><h3 id="https://www.notion.so/0e810d1c053b49018ae4578103c9fd51" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/0e810d1c053b49018ae4578103c9fd51"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Cglib代理</span></span></h3><ol class="NumberedListWrapper"><li id="https://www.notion.so/8aed478128ed4b1c964facaf624239fd" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">静态代理和JDK代理模式都要求目标对象是实现一个接口，但是有时候目标对象只是一个单独的对象，并没有实现任何接口，这个时候可以使用目标对象子类来实现代理，这就是Cglib代理</span></span></li><li id="https://www.notion.so/97b47e74be3e4defacea8404a2cf54b2" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">Cglib代理也叫作子类代理，它在内存中构建一个子类对象从而实现对目标对象功能的拓展，有些书也将Cglib代理归属到动态代理</span></span></li><li id="https://www.notion.so/650babc872314cc389f8069306827312" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">Cglib是一个强大的高性能的代码生成包，它可以在运行期拓展java类与实现java接口。它广泛的被许多AOP框架使用，如Spring AOP，实现方法拦截</span></span></li><li id="https://www.notion.so/cb899fd686fc4e1da80bd798a2a61c68" class="NumberedList" value="4"><span class="SemanticStringArray"><span class="SemanticString">在AOP编程中如何选择代理模式：</span></span></li></ol><ul class="BulletedListWrapper"><li id="https://www.notion.so/44577c9f30224dc7bb77e7e3f5632d5c" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">目标对象需要实现接口，用JDK代理</span></span></li><li id="https://www.notion.so/d895f0a1dfda49bf82f6623575e6e104" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">目标对象不需要实现接口，用Cglib代理</span></span></li></ul><ol class="NumberedListWrapper"><li id="https://www.notion.so/2720c2242d794c1db9f2775343a33bdf" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">Cglib包的底层是通过字节码处理框架ASM来转换字节码并生成新的类</span></span></li><li id="https://www.notion.so/22f9580ca94c49f396e5b188b8b58a44" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">Cglib在内存中构建子类，注意代理的类不能为final，否则报错。</span></span></li><li id="https://www.notion.so/65665ea5101b4adf86228379cba95fe7" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">目标对象的方法如果为 final/static ,那么就不会拦截，即不会执行目标对象额外的业务方法。</span></span></li></ol><div id="https://www.notion.so/d5b9cddfcc8140a0ace964a16fb16ca5" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">应用实例：</strong></span></span></p></div><pre id="https://www.notion.so/da338ace31cc4d2e9964bb3bf0dda98f" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.cglibproxy;
+
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+
+import java.lang.reflect.Method;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public class ProxyFactory implements MethodInterceptor {
+
+    //维护一个目标对象
+    private Object target;
+
+    //构造器，传入一个被代理的对象
+    public ProxyFactory(Object target) {
+        this.target = target;
+    }
+
+    //返回一个代理对象： 是target的代理对象
+    public Object getProxyInstance() {
+        //1. 创建一个工具类
+        Enhancer enhancer = new Enhancer();
+        //2. 设置父类
+        enhancer.setSuperclass(target.getClass());
+        //3. 设置回调函数
+        enhancer.setCallback(this);
+        //4. 创建子类对象，即代理对象
+        return enhancer.create();
+    }
+
+    //重写 intercept 方法，会调用目标对象的方法
+    @Override
+    public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+        System.out.println(&quot;Cglib 代理 开始&quot;);
+        Object returnVal = method.invoke(target, args);
+        System.out.println(&quot;Cglib 代理 结束&quot;);
+        return returnVal;
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/7836d340a5ee4a6ab72e379399327158" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.cglibproxy;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public class Teacher {
+    void Teach(String name) {
+        System.out.println(&quot;Cglib代理: &quot; + name + &quot; : 正在授课&quot;);
+    }
+
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/b1c2aa3cbb3542daa03d1bef4b80c843" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.proxy.cglibproxy;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public class Client {
+    public static void main(String[] args) {
+        //创建目标对象
+        Teacher target = new Teacher();
+        //获取代理对象，并且将目标对象传递给代理对象
+        Teacher proxyInstance = (Teacher) new ProxyFactory(target).getProxyInstance();
+        //执行代理对象的方法，触发intercept方法，实现对目标对象的调用
+        proxyInstance.Teach(&quot;ljy&quot;);
+    }
+}
+</span></span></span></code></pre><h2 id="https://www.notion.so/73b3614831f14ab8bca8ff358d0b85c5" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/73b3614831f14ab8bca8ff358d0b85c5"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">适配器模式（Adapter模式）</span></span></h2><ol class="NumberedListWrapper"><li id="https://www.notion.so/22feb5db93614f12b1241d8693e1225d" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">适配器模式将某个类的接口转换成客户端期望的另一个接口表示，主要目的是兼容性，让原本接口不匹配不能一起工作的两个类可以协同工作。别名包装器（Wrapper）</span></span></li><li id="https://www.notion.so/fd4636020b894010b83751c663039d30" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">适配器模式属于结构型模式</span></span></li><li id="https://www.notion.so/3ec6a7a1bd5f465583b4d4a42cb5e1bd" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">主要分为三类：类适配器模式、对象适配器模式、接口适配器模式</span></span></li></ol><div id="https://www.notion.so/e9e3df8ce2f84530ae25af67cd056b96" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">工作原理：</strong></span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/c325af8206e14ca997d7d5e695e4a4b3" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">适配器模式：将一个类的接口转换成另一种接口，让原本接口不兼容的类可以兼容</span></span></li><li id="https://www.notion.so/e04d301aa1b84884a0bdd02918be7952" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">从用户角度看不到被适配者，是解耦的</span></span></li><li id="https://www.notion.so/259a6f758c0742bab7966ea9d6035ae9" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">用户调用适配器转化出来的目标接口方法，适配器再调用被适配者的相关接口方法</span></span></li><li id="https://www.notion.so/92c1603356b340a5929c0e4abda09a24" class="NumberedList" value="4"><span class="SemanticStringArray"><span class="SemanticString">用户收到反馈结果，感觉只是和目标接口交互</span></span></li></ol><h3 id="https://www.notion.so/4792c41e70484be1854cfe914d3ad1b6" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/4792c41e70484be1854cfe914d3ad1b6"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">类适配器模式</span></span></h3><ol class="NumberedListWrapper"><li id="https://www.notion.so/ffec96a6d8eb479a8a04c9ad942f88b0" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">Java是单继承机制，所以类适配器需要继承src类（被适配的类），这一点算是一个缺点。因为这要求dst（适配接口）必须是接口，有一定的局限性</span></span></li><li id="https://www.notion.so/e1ec07ef31c14291a943ba012c0d3d3b" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">src类的方法在Adapter中都会暴露出来，也增加了使用的成本</span></span></li><li id="https://www.notion.so/6e17f32e50d549ddb10d4ac586210fbc" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">由于其继承了src类，所以它可以根据需求重写src类的方法，使得Adapter的灵活性增强</span></span></li></ol><pre id="https://www.notion.so/ef3d2011441e4d9b816979ccb7101311" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.classadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+
+//被适配的类
+public class Voltage220V {
+    public int output220V(){
+        int src = 220;
+        System.out.println(&quot;电压 : &quot; + src + &quot;伏&quot;);
+        return src;
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/a49f6f7481de45eeb6645c8a08c941d5" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.classadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+//适配接口
+public interface Voltage5Vable {
+    public int output5V();
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/372384a464e949489c031b3188214201" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.classadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+//适配器
+public class VoltageAdapter  extends Voltage220V implements Voltage5Vable{
+    @Override
+    public int output5V() {
+        //获取220V电压
+        int srcV  = output220V();
+        int dstV = srcV/44;
+        return dstV;
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/6c687feca2c3499594213abe703d1145" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.classadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public class Phone {
+    //充电
+    public void Charging(Voltage5Vable voltage5Vable){
+        if(voltage5Vable.output5V() == 5){
+            System.out.println(&quot;电压为5伏，可以充电&quot;);
+        } else if (voltage5Vable.output5V() &gt; 5){
+            System.out.println(&quot;电压大于5伏，无法充电&quot;);
+        }
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/991a854f209c4cc3a01c48efd532d994" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.classadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public class Client {
+
+    public static void main(String[] args) {
+        System.out.println(&quot;==== 类适配器 ====&quot;);
+        Phone p = new Phone();
+        p.Charging(new VoltageAdapter());
+    }
+
+}
+</span></span></span></code></pre><h3 id="https://www.notion.so/699a53dab906432ba312e2ff7f462a46" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/699a53dab906432ba312e2ff7f462a46"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">对象适配器模式</span></span></h3><ol class="NumberedListWrapper"><li id="https://www.notion.so/2528d4c9f37a4f6da91a7d41628f1a6c" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">基本思路和类的适配器模式相同，只是将Adapter类作修改，不是继承src类，而是持有src类的实现，以解决兼容性的问题。即持有src类，实现dst类接口，完成src-&gt;dst的适配</span></span></li><li id="https://www.notion.so/730089fa47ae4fa281562f7f75521805" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">根据“合成服用原则”，在系统中尽量使用关联关系来替代继承关系</span></span></li><li id="https://www.notion.so/4ea42f759389484d932435a1b1701732" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">对象适配器模式是适配器模式常用的一种</span></span></li></ol><pre id="https://www.notion.so/5b94c6f1715241fc96e57f7a4394ba52" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.objectadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+//适配接口
+public interface Voltage5Vable {
+    public int output5V();
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/877bc69ed2b14494bed01319aa73457d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.objectadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+
+//被适配的类
+public class Voltage220V {
+    public int output220V(){
+        int src = 220;
+        System.out.println(&quot;电压 : &quot; + src + &quot;伏&quot;);
+        return src;
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/4d157be7f11c4bb79b7c60747c29da74" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.objectadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+//适配器
+public class VoltageAdapter implements Voltage5Vable {
+
+    private Voltage220V voltage220V;
+
+    //通过构造器传入Voltage220V实例
+    public VoltageAdapter(Voltage220V voltage220V){
+        this.voltage220V = voltage220V;
+    }
+
+    @Override
+    public int output5V() {
+        int dst = 0;
+        if(null != voltage220V){
+            int src = voltage220V.output220V();//获取220电压
+            System.out.println(&quot;使用对象适配器转换&quot;);
+            dst = src/44;
+            System.out.println(&quot;适配完成: &quot;+ dst + &quot;伏&quot;);
+        }
+        return dst;
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/98edf245316d4c70bb48ab55ca7ffc48" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.objectadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public class Phone {
+    //充电
+    public void Charging(Voltage5Vable voltage5Vable){
+        if(voltage5Vable.output5V() == 5){
+            System.out.println(&quot;电压为5伏，可以充电&quot;);
+        } else if (voltage5Vable.output5V() &gt; 5){
+            System.out.println(&quot;电压大于5伏，无法充电&quot;);
+        }
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/9609ab6e84e744e493141d4f8aa21115" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.objectadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public class Client {
+
+    public static void main(String[] args) {
+        System.out.println(&quot;==== 类适配器 ====&quot;);
+        Phone p = new Phone();
+        p.Charging(new VoltageAdapter(new Voltage220V()));
+    }
+
+}
+</span></span></span></code></pre><h3 id="https://www.notion.so/d4b6c0d2f6b54d3ea75d266e21e5c73e" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/d4b6c0d2f6b54d3ea75d266e21e5c73e"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">接口适配器模式</span></span></h3><ol class="NumberedListWrapper"><li id="https://www.notion.so/f9cb2a13a09040eaa549c71da3592bfc" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">一些书籍将之称为：适配器模式或缺省适配器模式</span></span></li><li id="https://www.notion.so/baafc456d4ca417a944a56c15d0af1d1" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">当不需要全部实现接口提供的方法时，可先设计一个抽象类实现接口，并为该接口每个方法提供一个默认实现（空方法），那么该抽象类的子类可有选择地覆盖父类某些方法来实现需求</span></span></li><li id="https://www.notion.so/6cf9125a3ccf4b4ba004d1e724b489eb" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">适用于一个接口不想适用其所有的方法的情况</span></span></li></ol><pre id="https://www.notion.so/39d56eeccce04d6c9b069905cacb1b2c" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.interfaceadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public interface TestInterface {
+    public void m1();
+    public void m2();
+    public void m3();
+    public void m4();
+
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/bc193e1cf16c442fa2fc24752556702c" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.interfaceadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+
+//在AbsAdapter 将TestInterface 的方法默认实现
+public abstract  class AbsAdapter implements TestInterface{
+
+    @Override
+    public void m1() {
+
+    }
+
+    @Override
+    public void m2(){
+
+    }
+
+
+    @Override
+    public void m3(){
+
+    }
+
+    @Override
+    public void m4(){
+
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/5d6e59714576415bba6294d3450b004a" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.adapter.interfaceadapter;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public class Client {
+    public static void main(String[] args) {
+        AbsAdapter absAdapter = new AbsAdapter(){
+            //只需覆盖我们需要使用的接口方法
+            @Override
+            public void m1(){
+                System.out.println(&quot;使用m1方法&quot;);
+            }
+        };
+        absAdapter.m1();
+    }
+}
+</span></span></span></code></pre><h2 id="https://www.notion.so/9cde07e17b1f4f428a2becacd2016ea4" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/9cde07e17b1f4f428a2becacd2016ea4"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">职责链模式（Chain of Responsibility Pattern）</span></span></h2><ol class="NumberedListWrapper"><li id="https://www.notion.so/e3e708bcd91f4ed7966dea4893317971" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">职责链模式又叫责任链模式，为请求创建一个接受者对象的链。这种模式对请求的发送者和接受者进行解耦</span></span></li><li id="https://www.notion.so/34889718e3ac419386dfaeacf8d9dc3f" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">职责链模式通常每个接受者都包含另一个接受者的引用。如果一个对象不能处理该请求，那么它会把相同的请求传给下一个接受者，以此类推</span></span></li><li id="https://www.notion.so/2647e26e08ca46218a9005f8bfa26446" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">属于行为型模式</span></span></li></ol><div id="https://www.notion.so/b8c930fa395140e8915f3d165afff202" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">应用实例：</strong></span></span></p></div><pre id="https://www.notion.so/708fd89a02f3484e916b059fd2cdf4b3" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.responsibilitychain;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public class PurchaseRequest {
+
+    private int id = 0;
+    private int type = 0;//请求类型
+    private float price = 0.0f;
+
+    public PurchaseRequest(int id, int type, float price) {
+        this.id = id;
+        this.type = type;
+        this.price = price;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+}
+
+</span></span></span></code></pre><pre id="https://www.notion.so/e9fd7ac5de9d41fbb8c363ca5734ceed" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.responsibilitychain;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public abstract class Approver {
+
+    Approver approver; //下一个处理者
+    String name; //名字
+
+    public Approver(String name) {
+        this.name = name;
+    }
+
+    //下一个处理者
+    public void setApprover(Approver approver) {
+        this.approver = approver;
+    }
+
+    //处理请求的方法，处理是子类完成，所以该方法设置成抽象
+    public abstract void processRequest(PurchaseRequest purchaseRequest);
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/a255102124ae4ccbb135dff94ce0f2f9" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.responsibilitychain;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+ //其他角色的处理与之类似，这里不再详述
+public class DepartmentApprover extends Approver {
+
+    public DepartmentApprover(String name) {
+        super(name);
+    }
+
+    @Override
+    public void processRequest(PurchaseRequest purchaseRequest) {
+        if (purchaseRequest.getPrice() &lt;= 5000) {
+            System.out.println(&quot;请求编号id = &quot; + purchaseRequest.getId() + &quot; 被 &quot; + this.name + &quot; 处理&quot;);
+        } else {
+            approver.processRequest(purchaseRequest);
+        }
+    }
+}
+</span></span></span></code></pre><pre id="https://www.notion.so/05f9f4f4dafb43a59958a3b62c7aff40" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>package com.ljy.learn.responsibilitychain;
+
+/**
+ * @author : 夕
+ * @date : 2019/8/9
+ */
+public class Client {
+
+    public static void main(String[] args) {
+        //创建请求
+        PurchaseRequest purchaseRequest = new PurchaseRequest(1, 1, 31000);
+
+        //创建审批人
+        DepartmentApprover departmentApprover = new DepartmentApprover(&quot;主任&quot;);
+        CollegeApprover collegeApprover = new CollegeApprover(&quot;院长&quot;);
+        ViceSchoolMasterApprover viceSchoolMasterApprover = new ViceSchoolMasterApprover(&quot;副校长&quot;);
+        SchoolMasterApprover schoolMasterApprover = new SchoolMasterApprover(&quot;校长&quot;);
+
+        //将各级别审批下一个指向设置，即设置责任链
+        // (处理人构成环形：可以从任意一个处理方进行调用；不设置成环形：必须从最开始进行调用)
+        departmentApprover.setApprover(collegeApprover);
+        collegeApprover.setApprover(viceSchoolMasterApprover);
+        viceSchoolMasterApprover.setApprover(schoolMasterApprover);
+        schoolMasterApprover.setApprover(departmentApprover);
+
+        //调用
+        departmentApprover.processRequest(purchaseRequest);
+    }
+}
+</span></span></span></code></pre><h2 id="https://www.notion.so/959275f2b81f416bb53c331a6150ffed" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/959275f2b81f416bb53c331a6150ffed"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">装饰者模式</span></span></h2><ul class="BulletedListWrapper"><li id="https://www.notion.so/9caf09e31f6a4f2d83b7dff9de7ed834" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">动态的将新功能附加到对象上。在对象拓展功能方面，它比继承更有弹性，装饰者模式也体现了开闭原则（OCP）。</span></span></li></ul><h3 id="https://www.notion.so/1a5469d24a064211bac4ccf7fa7b6961" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/1a5469d24a064211bac4ccf7fa7b6961"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">登场角色</span></span></h3><ol class="NumberedListWrapper"><li id="https://www.notion.so/9633f43d4f8f46c0a5f0c99988cff699" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">Component：增加功能时的核心角色</span></span></li><li id="https://www.notion.so/d2b70f87f6df472c90efeea91bf88654" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">ConcreteComponent：实现了Component角色所定义的接口（API）的具体</span></span></li><li id="https://www.notion.so/1e219b30d6bb42a6b079647eb8e258a1" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">Decorator：</span></span></li><li id="https://www.notion.so/93cd38a06c1a4bdbabf2cfb93ee55f29" class="NumberedList" value="4"><span class="SemanticStringArray"><span class="SemanticString">ConcreteDecorator：</span></span></li></ol></article>
+  <footer class="Footer">
+  <div>&copy; 夕的博客 2022</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>

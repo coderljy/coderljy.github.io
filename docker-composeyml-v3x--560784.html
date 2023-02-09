@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>docker-compose.yml V3.x 指令详解&nbsp;|&nbsp;夕的博客</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="docker-compose.yml V3.x 指令详解">
+  
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+    <h1 class="Header__Title">docker-compose.yml V3.x 指令详解</h1>
+    
+  </header>
+  <article id="https://www.notion.so/5607844be1ea432ca3dbabfa50735fdc" class="PageRoot"><h2 id="https://www.notion.so/b61879c170aa42b49facb656fde6dcf5" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/b61879c170aa42b49facb656fde6dcf5"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">docker-compopse.yml 版本和Docker兼容性表</span></span></h2><div id="https://www.notion.so/a35acf2f020242269e589a8ad0aa3729" class="Image Image--PageWidth"><figure><a href="#"><img src="#" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/e48be3f09c8d458f9e40ad63be16722b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">详情请看</strong></span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://docs.docker.com/compose/compose-file/#reference-and-guidelines"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">官网文档</strong></a></span></span></p></div><h2 id="https://www.notion.so/38227ec6d43044a090e06ac225100f7e" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/38227ec6d43044a090e06ac225100f7e"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">顶级配置项</span></span></h2><ul class="BulletedListWrapper"><li id="https://www.notion.so/81fc0ccdfafa4ecab52245a0171f4fdc" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">version 定义了版本信息</span></span></li><li id="https://www.notion.so/c2ad778d54af405baabdc309a5ff23d8" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">services 定义了服务的配置信息</span></span></li><li id="https://www.notion.so/ce437e4ad7d4448488234ac5b04957ab" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">networks 定义了网络信息，提供给 services 中的 具体容器使用</span></span></li><li id="https://www.notion.so/4ea1a44539e541a38cea2633789318e7" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">volumes 定义了卷信息，提供给 services 中的 具体容器使用</span></span></li></ul><div id="https://www.notion.so/8a994a3b899a4fd486e800fae7ea18e7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">示例：</strong></span></span></p></div><pre id="https://www.notion.so/fd464479f69f4dafbc72edf88181d349" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>version: &quot;3&quot;
+services:
+
+  redis:
+    image: redis:alpine
+    ports:
+      - &quot;6379&quot;
+    networks:
+      - frontend
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  db:
+    image: postgres:9.4
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+  result:
+    image: dockersamples/examplevotingapp_result:before
+    ports:
+      - &quot;5001:80&quot;
+    networks:
+      - backend
+    depends_on:
+      - db
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  worker:
+    image: dockersamples/examplevotingapp_worker
+    networks:
+      - frontend
+      - backend
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels: [APP=VOTING]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  db-data:
+</span></span></span></code></pre><h2 id="https://www.notion.so/321160a15ee1414ea4dfd60a2dece9db" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/321160a15ee1414ea4dfd60a2dece9db"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">services配置指令</span></span></h2><div id="https://www.notion.so/5e0bcc55d90b4d55a49fabdab00231b7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. container_name</strong></span></span></p></div><div id="https://www.notion.so/86f307c00e314ecb8e2e1056a8be1f7a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">指定容器名称</span></span></p></div><pre id="https://www.notion.so/bd1faede72dd4b93941609eebacee71a" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>version: &quot;3&quot;
+services:
+
+  redis:
+    image: redis:alpine
+    container_name: redis_test
+</span></span></span></code></pre><div id="https://www.notion.so/5b8d3ffdc06d426eb152166c17e4243b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. image</strong></span></span></p></div><div id="https://www.notion.so/264d2e0718aa4c1ea411b213d11059bd" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">指定为镜像名称或镜像 ID。如果镜像在本地不存在，Compose 将会尝试拉取这个镜像。</span></span></p></div><pre id="https://www.notion.so/8df633ba2fe247aaacdc992bad5926f1" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>version: &quot;3&quot;
+services:
+
+  redis:
+    image: redis:alpine
+</span></span></span></code></pre><div id="https://www.notion.so/5eb3f1558c2747be96c7e1150b5414bf" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">3. build</strong></span></span></p></div><div id="https://www.notion.so/26ae272870ff46e9a03de3b03732c984" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">指定 Dockerfile 所在文件夹的路径（可以是绝对路径，或者相对 docker-compose.yml 文件的路径）。 Compose 将会利用它自动构建这个镜像，然后使用这个镜像。</span></span></p></div><pre id="https://www.notion.so/0b95aaacb4fa4489b50e5cfeead77238" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>version: &#x27;3&#x27;
+services:
+  webapp:
+    build: ./dir
+</span></span></span></code></pre><div id="https://www.notion.so/49ae5f4acae046b6843c80f514f40f0c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">也可以使用 context 指令指定 Dockerfile 所在文件夹的路径（或者是git仓库的URL）。同时使用 dockerfile 指令指定 Dockerfile 文件名。</span></span></p></div><pre id="https://www.notion.so/9354512542e14e9480023009827bc78b" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>version: &#x27;3&#x27;
+services:
+
+  webapp:
+    build:
+      context: ./dir
+      dockerfile: Dockerfile-name
+</span></span></span></code></pre><div id="https://www.notion.so/ff5820391d28492c8082fdb855a303f0" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">注意：</strong></span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">
+如果同时指定了 image和 build， image 不在具有单独使用它的意义，而是指定了目前要构建的镜像的名称。 也就是说 Compose 会使用 build 指令中指定的 Dockerfile  构建的镜像，之后构建的镜像名称使用 image 中指定的名字 webapp:tag命名。</strong></span></span></p></div><div id="https://www.notion.so/faf393a1a81e4d12a0f0bba7c2c67f16" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">4. command</strong></span></span></p></div><div id="https://www.notion.so/0fdb49e876354490835516180e462b69" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">使用 command 可以覆盖容器启动后默认执行的命令。</span></span></p></div><pre id="https://www.notion.so/6b47b32dde7c414dadb61afa323a8b5d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>#写成shell形式
+command: bundle exec thin -p 3000
+#写成Dockerfile中的exec格式
+command: [bundle, exec, thin, -p, 3000]
+</span></span></span></code></pre><div id="https://www.notion.so/36cc01368afe4b94a6e8cbbd5bff1be7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">5. depends_on</strong></span></span></p></div><div id="https://www.notion.so/6e17c04e75f24029b740d9494059d148" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">解决容器的依赖、启动先后的问题。</span></span></p></div><pre id="https://www.notion.so/da99e87815da4234af6bb5e825208614" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>version: &#x27;3&#x27;
+
+services:
+  web:
+    image: redis:alpine
+    container_name: redis_test
+    depends_on:
+      - db
+</span></span></span></code></pre><div id="https://www.notion.so/09a07f8d91994c0d914b89d43539771e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">6. environment</strong></span></span></p></div><div id="https://www.notion.so/287b016e8d6346ed83860e648c9dd838" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">设置环境变量。可以使用数组或字典两种格式。</span></span></p></div><div id="https://www.notion.so/b610becc12794394bccc3f6ea654a704" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">只给定名称的变量会自动获取运行 Compose 主机上的对应变量的信息。</span></span></p></div><pre id="https://www.notion.so/f8859843d3844affbb64b608a0a8c8b2" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>environment:
+  RACK_ENV: development
+  SHOW: &#x27;true&#x27;
+  SESSION_SECRET:
+
+environment:
+  - RACK_ENV=development
+  - SHOW=true
+  - SESSION_SECRET
+</span></span></span></code></pre><div id="https://www.notion.so/fb3cfe53ee2a4443bc38439f77a4141a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果变量名称或者值中用到 true|false，yes|no 等表达 布尔 含义的词汇，最好放到引号里，避免 YAML 自动解析某些内容为对应的布尔语义。这些特定词汇。</span></span></p></div><pre id="https://www.notion.so/25328d3e008c4333a7aa41aa19514806" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF
+</span></span></span></code></pre><div id="https://www.notion.so/8da2990d7cca4f6190661aba9fc09c4d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">7. expose</strong></span></span></p></div><div id="https://www.notion.so/0bf9b35755874ad080f863b3fdd3877a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">暴露端口，但不映射到宿主机，只被连接的服务访问。</span></span></p></div><div id="https://www.notion.so/9f2d17700fd346eab527d8f868f381f8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">仅可以指定容器内部的端口为参数</span></span></p></div><pre id="https://www.notion.so/eca8353757f3497aa39c17514545d3ae" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>expose:
+ - &quot;3000&quot;
+ - &quot;8000&quot;
+</span></span></span></code></pre><div id="https://www.notion.so/012e6cc618d740578f496376d713811c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">8. ports</strong></span></span></p></div><div id="https://www.notion.so/74042e5be3ae4d7991c1a4c0ee529f48" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">映射端口信息。</span></span></p></div><div id="https://www.notion.so/8c0c3e24e4c445a99dfa5c3e9afd32eb" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">宿主端口：容器端口 (即：HOST:CONTAINER) 的格式格式，或者仅仅指定容器的端口（宿主将会随机选择端口）。</span></span></p></div><pre id="https://www.notion.so/138ae39694374e5ab640f1699bca6912" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>ports:
+ - &quot;3000&quot;
+ - &quot;3000-3005&quot;
+ - &quot;8000:8000&quot;
+ - &quot;9090-9091:8080-8081&quot;
+ - &quot;49100:22&quot;
+ - &quot;127.0.0.1:8001:8001&quot;
+ - &quot;127.0.0.1:5000-5010:5000-5010&quot;
+ - &quot;6060:6060/udp&quot;
+</span></span></span></code></pre><blockquote id="https://www.notion.so/8aee492f1c754d88a033385487a0072b" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">注意：当使用 HOST:CONTAINER 格式来映射端口时，如果你使用的容器端口小于 60 并且没放到引号里，可能会得到错误结果，因为 YAML 会自动解析 xx:yy 这种数字格式为 60 进制。为避免出现这种问题，建议数字串都采用引号包括起来的字符串格式。</span></span></blockquote><div id="https://www.notion.so/cfebf150ac9443b0abb221589995a192" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">9. extra_hosts</strong></span></span></p></div><div id="https://www.notion.so/e3646d30fc0243faa2b9c53d9492a65e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">类似 Docker 中的 --add-host 参数，指定额外的 host 名称映射信息。会在启动后的服务容器中 /etc/hosts 文件中添加host映射信息。</span></span></p></div><pre id="https://www.notion.so/9afec3cf68e3401f9fda09ca5ccb8fd2" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>extra_hosts:
+ - &quot;somehost:162.242.195.82&quot;
+ - &quot;otherhost:50.31.209.229&quot;
+</span></span></span></code></pre><div id="https://www.notion.so/2b7195ecaeb54c28a33a90ad5c0ddf29" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">10. networks</strong></span></span></p></div><div id="https://www.notion.so/9f97364049c34cf3b66ce38d1dd8cf9c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">要加入的网络，使用顶级 networks 定义下的条目 。</span></span></p></div><pre id="https://www.notion.so/81c589e828ee4dc29fd81381ef8e6e48" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>services:
+  some-service:
+    networks:
+     - some-network
+     - other-network
+networks:
+  some-network:
+  other-network:
+</span></span></span></code></pre><div id="https://www.notion.so/72a3e4b079b1440b82f1d32eed3a89f6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">11. entrypoint</strong></span></span></p></div><div id="https://www.notion.so/a870c8fe32a444ceb1bf7e1843120799" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">指定服务容器启动后执行的入口文件。</span></span></p></div><div id="https://www.notion.so/335ce97eb3b642f9aac5d7e282051860" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">12. user</strong></span></span></p></div><div id="https://www.notion.so/d235b5758ac34719a330a2ff3abb0b8f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">指定容器中运行应用的用户名。</span></span></p></div><div id="https://www.notion.so/beb2707457e744279e5eb6301351d5c3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">13. working_dir</strong></span></span></p></div><div id="https://www.notion.so/2b3928ea219e45f89def8f7faebee9f9" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">指定容器中工作目录。</span></span></p></div><div id="https://www.notion.so/44dbcbca160a44009653501490884d34" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">14. restart</strong></span></span></p></div><div id="https://www.notion.so/4ebae9f4b0724c539dfd98a77a4140bd" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">指定容器退出后的重启策略为始终重启。该命令对保持服务始终运行十分有效，在生产环境 中推荐配置为 always 或者 unless-stopped 。</span></span></p></div><pre id="https://www.notion.so/ca2bea69b77943fa8cbb66dbe1ec60ef" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>restart: always
+</span></span></span></code></pre><div id="https://www.notion.so/4ab7bbf0977442c29b1ace201dd37ec6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">15. alias</strong></span></span></p></div><div id="https://www.notion.so/148030edcfb74074b0d597da3b0af166" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">网络上此服务的别名（备用主机名）。同一网络上的其他容器可以使用服务名称或此别名连接到其中一个服务的容器。
+由于aliases是网络范围的，因此相同的服务可以在不同的网络上具有不同的别名。
+注意：网络范围的别名可以由多个容器共享，甚至可以由多个服务共享。如果是，则无法保证名称解析为的容器。</span></span></p></div><pre id="https://www.notion.so/0d4822122db3429b9bf7e9e07246ef02" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>services:
+  some-service:
+    networks:
+      some-network:
+        aliases:
+         - alias1
+         - alias3
+      other-network:
+        aliases:
+         - alias2
+</span></span></span></code></pre><h2 id="https://www.notion.so/f9baf150ba2f4850aa3b33e610f265d4" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/f9baf150ba2f4850aa3b33e610f265d4"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">volumes配置指令</span></span></h2><div id="https://www.notion.so/a47c4fe6b04143e8baf9edf34b2604c2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">数据卷所挂载路径设置。可以设置宿主机路径 （HOST:CONTAINER） 或加上访问模式 （HOST:CONTAINER:ro）。</span></span></p></div><div id="https://www.notion.so/d8a02ea1f39c42948627395edbac81b9" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">该指令中路径支持相对路径。</span></span></p></div><pre id="https://www.notion.so/0a2d7b45f87b430680603e58fba8d670" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>volumes:
+ - /var/lib/mysql
+ - cache/:/tmp/cache
+ - ~/configs:/etc/configs/:ro
+</span></span></span></code></pre><h2 id="https://www.notion.so/108069443ebc453ba95aadff7074deb0" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/108069443ebc453ba95aadff7074deb0"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">volumes配置指令</span></span></h2><div id="https://www.notion.so/2929d34c731e4a418c316e27278342a7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. 未显式声明网络环境的docker-compose.yml</strong></span></span></p></div><div id="https://www.notion.so/e61f7632f2754222ae9fc741429581a0" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">使用docker-compose up启动容器后，这些容器都会被加入app_default网络中。使用docker network ls可以查看网络列表，docker network inspect &lt;container id&gt;可以查看对应网络的配置。</strong></span></span></p></div><pre id="https://www.notion.so/732c0710c5a048b7b4a72a19e3db1f28" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>version: &#x27;3&#x27;
+services:
+  web:
+    mage: nginx:latest
+    container_name: web
+    depends_on:
+      - db
+    ports:
+      - &quot;9090:80&quot;
+    links:
+      - db
+  db:
+    image: mysql
+    container_name: db
+</span></span></span></code></pre><div id="https://www.notion.so/b4b0ba9fc7374aeda9744205f3f887b1" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. networks关键字指定自定义网络</strong></span></span></p></div><div id="https://www.notion.so/520575ee5c2648ef8d2a701ce3ec2513" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">例如下面的docker-compose.yml文件，定义了front和back网络，实现了网络隔离。其中proxy和db之间只能通过app来实现通信。其中，custom-driver-1并不能直接使用，你应该替换为host, bridge, overlay等选项中的一种。</span></span></p></div><pre id="https://www.notion.so/f475afe849f149ce80a46e64769d45b0" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>version: &#x27;3&#x27;
+
+services:
+  proxy:
+    build: ./proxy
+    networks:
+      - front
+  app:
+    build: ./app
+    networks:
+      - front
+      - back
+  db:
+    image: postgres
+    networks:
+      - back
+
+networks:
+  front:
+    # Use a custom driver
+    driver: custom-driver-1
+  back:
+    # Use a custom driver which takes special options
+    driver: custom-driver-2
+    driver_opts:
+      foo: &quot;1&quot;
+      bar: &quot;2&quot;
+</span></span></span></code></pre><div id="https://www.notion.so/13f23aec3816401d8e78905112ef3ba0" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">3. 配置默认网络</strong></span></span></p></div><pre id="https://www.notion.so/a8605598422347ff8359cb7f162bb252" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>version: &#x27;2&#x27;
+
+services:
+  web:
+    build: .
+    ports:
+      - &quot;8000:8000&quot;
+  db:
+    image: postgres
+
+networks:
+  default:
+    # Use a custom driver
+    driver: custom-driver-1
+</span></span></span></code></pre><div id="https://www.notion.so/3fa84c9f60f54da59ea9cbbb9ff193f6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">4. 使用已存在的网络</strong></span></span></p></div><pre id="https://www.notion.so/487dc701a6a14477bd330129753d45b4" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>networks:
+  default:
+    external:
+      name: my-pre-existing-network
+</span></span></span></code></pre></article>
+  <footer class="Footer">
+  <div>&copy; 夕的博客 2022</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>

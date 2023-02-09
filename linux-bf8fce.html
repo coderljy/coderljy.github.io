@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>linux零拷贝技术&nbsp;|&nbsp;夕的博客</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="linux零拷贝技术">
+  
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;📖&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+    <h1 class="Header__Title">linux零拷贝技术</h1>
+    
+  </header>
+  <article id="https://www.notion.so/bf8fce20ab4c43b9a38768357e78afe8" class="PageRoot"><h2 id="https://www.notion.so/0b2fef88492a470590a6c8f6f23ddac0" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/0b2fef88492a470590a6c8f6f23ddac0"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">简介</span></span></h2><blockquote id="https://www.notion.so/bfe49a59684d4a3eb13030ca72c6760c" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">零复制（英语：Zero-copy；也译零拷贝）技术是指计算机执行操作时，CPU不需要先将数据从某处内存复制到另一个特定区域。这种技术通常用于通过网络传输文件时节省CPU周期和内存带宽。</span></span></blockquote><div id="https://www.notion.so/93f8a4ac918747a0a8d38e03c6f820a7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">零拷贝操作减少了在用户空间与内核空间之间切换模式的次数。</span></span></p></div><div id="https://www.notion.so/6754e1bffc274c86a1a6974d1d7e64c7" class="Image Image--PageWidth"><figure><a href="#"><img src="#" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/656a658eacac46dd99acff8bfbaf3454" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">传统的I/O操作进行了3次用户空间与内核空间的上下文切换，以及4次数据拷贝。其中4次数据拷贝中包括了2次DMA拷贝和2次CPU拷贝。</strong></span></span></p></div><h2 id="https://www.notion.so/e889c6fc0755426f8d362de2c309bb81" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/e889c6fc0755426f8d362de2c309bb81"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">Linux 中零拷贝技术的实现方向</span></span></h2><h3 id="https://www.notion.so/c9b20ec5094d4aea995d485e1b74ece1" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/c9b20ec5094d4aea995d485e1b74ece1"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">一、直接 I/O</span></span></h3><div id="https://www.notion.so/804eecf6c0c14eb39558ecd390bcfd64" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">对于这种数据传输方式来说，应用程序可以直接访问硬件存储，操作系统内核只是辅助数据传输。这种方式依旧存在用户空间和内核空间的上下文切换，但是硬件上的数据不会拷贝一份到内核空间，而是直接拷贝至了用户空间，因此直接I/O不存在内核空间缓冲区和用户空间缓冲区之间的数据拷贝。</span></span></p></div><h3 id="https://www.notion.so/80905f2665504f119bd269e237eb93a2" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/80905f2665504f119bd269e237eb93a2"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">二、copy-on-write(写时复制技术)</span></span></h3><div id="https://www.notion.so/2ea6df880e28409eb61e7b216caf22a0" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在某些情况下，Linux操作系统的内核空间缓冲区可能被多个应用程序所共享，操作系统有可能会将用户空间缓冲区地址映射到内核空间缓存区中。当应用程序需要对共享的数据进行修改的时候，才需要真正地拷贝数据到应用程序的用户空间缓冲区中，并且对自己用户空间的缓冲区的数据进行修改不会影响到其他共享数据的应用程序。所以，如果应用程序不需要对数据进行任何修改的话，就不会存在数据从系统内核空间缓冲区拷贝到用户空间缓冲区的操作。</span></span></p></div><h3 id="https://www.notion.so/57d7ef9587fb4a21ba7f293e342823df" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/57d7ef9587fb4a21ba7f293e342823df"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">三、数据传输不经过用户进程地址空间</span></span></h3><div id="https://www.notion.so/1502809947b848b1aaa1e254ec785eba" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在数据传输的过程中，避免数据在操作系统内核地址空间的缓冲区和用户应用程序地址空间的缓冲区之间进行拷贝。有的时候，应用程序在数据进行传输的过程中不需要对数据进行访问，那么，将数据从 Linux 的页缓存拷贝到用户进程的缓冲区中就可以完全避免，传输的数据在页缓存中就可以得到处理。在某些特殊的情况下，这种零拷贝技术可以获得较好的性能。Linux 中提供类似的系统调用主要有 mmap()，sendfile() 以及 splice()。</span></span></p></div><h3 id="https://www.notion.so/9b7f3732618d4c4ca4fa1df87153cc6b" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/9b7f3732618d4c4ca4fa1df87153cc6b"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">mmap()</span></span></h3><pre id="https://www.notion.so/b8450c0531db4794b6f31e5fee54bcee" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>buf = mmap(diskfd, len);
+write(sockfd, buf, len);
+</span></span></span></code></pre><div id="https://www.notion.so/6cc955fa4189412f891df44c5937f97b" class="Image Image--PageWidth"><figure><a href="#"><img src="#" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/a9476f0168814848aba951a906fd0e92" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">过程：</strong></span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/46d52368273e4ee68547bfe62d09535c" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">应用进程调用了 mmap() 之后，数据会先通过 DMA 拷贝到操作系统内核缓冲区中去。接着，应用进程跟操作系统共享这个缓冲区。这样，操作系统内核和应用进程存储空间就不需要再进行任何的数据拷贝操作。</span></span></li><li id="https://www.notion.so/5e9e6421a90849df8d256333909ba7be" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">应用进程再调用write(),操作系统直接将内核缓冲区的内容拷贝到socket缓冲区中，这一切都发生在内核态 。</span></span></li><li id="https://www.notion.so/c3dbec9bf50843899e80be2e158f7c51" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">socket缓冲区再把数据发到网卡。</span></span></li></ol><div id="https://www.notion.so/dc1addb617264c11bd52bcecc0eb4aed" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">使用 mmap 并不一定能获得理想的数据传输性能。数据传输的过程中仍然需要一次 CPU 拷贝操作，而且映射操作也是一个开销很大的虚拟存储操作，这种操作需要通过更改页表以及冲刷 TLB （使得 TLB 的内容无效）来维持存储的一致性。</span></span></p></div><h3 id="https://www.notion.so/2558b563a966472887a79e724c2291fe" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/2558b563a966472887a79e724c2291fe"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">sendfile()</span></span></h3><div id="https://www.notion.so/4598690e0ded44bbb5c9b2288c7c24da" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">为了简化用户接口，同时减少 CPU 的拷贝次数，Linux 在版本 2.1 中引入了 sendfile() 这个系统调用。</span></span></p></div><pre id="https://www.notion.so/7cd28bbd9aa24ea3b645239a81ea3da4" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
+</span></span></span></code></pre><div id="https://www.notion.so/ee1cd80cde37452eb84581b80adbc147" class="Image Image--PageWidth"><figure><a href="#"><img src="#" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/a2f647bc009445a088aff0583a9b3ee6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">过程：</strong></span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/ab7ea8b385f148bea1e6837575978dd6" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">sendfile() 系统调用利用 DMA 引擎将文件中的数据拷贝到操作系统内核缓冲区中。</span></span></li><li id="https://www.notion.so/363b35858072432098712541ad776490" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">然后数据被拷贝到与 socket 相关的内核缓冲区中去。</span></span></li><li id="https://www.notion.so/2bcdbbf42c7146cf89298d54b071d592" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">接下来，DMA 引擎将数据从内核 socket 缓冲区中拷贝到协议引擎中去。</span></span></li></ol><div id="https://www.notion.so/66be7523575f41999a0f0142ddedc1e5" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">sendfile() 系统调用不需要将数据拷贝或者映射到应用程序地址空间中去，所以 sendfile() 只是适用于应用程序地址空间不需要对所访问数据进行处理的情况。相对于 mmap() 方法来说，因为 sendfile 传输的数据没有越过用户应用程序 / 操作系统内核的边界线，所以 sendfile () 也极大地减少了存储管理的开销。</span></span></p></div><div id="https://www.notion.so/43e490d2559243fb9089273fe1d60839" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">现在，已经减少了数据拷贝的次数，但是仍然存在一次CPU拷贝，就是页缓存到socket缓存的拷贝。</span></span></p></div><div id="https://www.notion.so/97477eff02644ca995208f3e5be03a00" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">借助于硬件的帮助，可以把这个拷贝省略掉。即：</span></span></p></div><div id="https://www.notion.so/6e5ef81a11324a33b49d168ce1b75a17" class="Image Image--PageWidth"><figure><a href="#"><img src="#" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/8f847db653de4167a950589fba36423f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">sendfile系统调用利用DMA引擎将文件内容拷贝到内核缓冲区去，然后将带有文件位置和长度信息的缓冲区描述符添加socket缓冲区去，这一步不会将内核中的数据拷贝到socket缓冲区中，DMA引擎会将内核缓冲区的数据拷贝到协议引擎中去，避免了最后一次拷贝。</strong></span></span></p></div><h3 id="https://www.notion.so/c18e3dd130df4bed9e47907d1e702626" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/c18e3dd130df4bed9e47907d1e702626"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">splice()</span></span></h3><div id="https://www.notion.so/e3c4ce245b3542109241112b0111673f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">splice() 可以被看成是类似于基于流的管道的实现，管道可以使得两个文件描述符相互连接，splice 的调用者则可以控制两个设备（或者协议栈）在操作系统内核中的相互连接。</span></span></p></div><pre id="https://www.notion.so/5182ac8805db406db92c69d9e9df5e25" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>ssize_t splice(int fd_in, loff_t *off_in, int fd_out, loff_t *off_out, size_t len, unsigned int flags);
+</span></span></span></code></pre><div id="https://www.notion.so/f8275ba97a0c44988450324e0c4f1387" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">splice（）在两个文件描述符之间移动数据，而不在内核地址空间和用户地址空间之间进行复制。它将文件描述符fd_in中的len个字节的数据传输到文件描述符fd_out，其中一个描述符必须引用一个管道。</span></span></p></div><div id="https://www.notion.so/c919038e068540c29ee14225d1729a99" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果fd_in引用一个管道，那么off_in必须为NULL。如果fd_in没有引用管道并且off_in为NULL，则从当前文件偏移量开始从fd_in读取字节，并且适当地调整当前文件偏移量。如果fd_in没有引用管道并且off_in不是NULL，那么off_in必须指向一个缓冲区，该缓冲区指定从fd_in读取字节的起始偏移量; 在这种情况下，fd_in的当前文件偏移量不会改变。类似的语句适用于fd_out和off_out。</span></span></p></div><div id="https://www.notion.so/7e3da755c58745a6a03877c482daa1f3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">flags参数是一个位掩码，它由零个或多个下列值组成：</span></span></p></div><pre id="https://www.notion.so/e925c80c7f7844259602c80edffe31fb" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>SPLICE_F_NONBLOCK：   splice 操作不会被阻塞。然而，如果文件描述符没有被设置为不可被阻塞方式的 I/O
+                     ，那么调用 splice 有可能仍然被阻塞。
+
+SPLICE_F_MORE：       告知操作系统内核下一个 splice 系统调用将会有更多的数据传来。
+
+SPLICE_F_MOVE：       如果输出是文件，这个值则会使得操作系统内核尝试从输入管道缓冲区直接将数据读入
+                      到输出地址空间，这个数据传输过程没有任何数据拷贝操作发生。如果内核不能从pipe
+                      移动数据或者pipe的缓存不是一个整页面，仍然需要拷贝数据。
+</span></span></span></code></pre><h3 id="https://www.notion.so/752573c0068f49878ac65d02aa51766a" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/752573c0068f49878ac65d02aa51766a"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">splice() 和 sendfile() 的区别与联系</span></span></h3><div id="https://www.notion.so/a1a80d27c43345d79b942e46a8470c3b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">联系：用户应用进程必须拥有两个已经打开的文件描述符，一个用于表示输入设备，一个用于表示输出设备。</span></span></p></div><div id="https://www.notion.so/8be96d65ca50489497aec90f0137a7d3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">区别：
+1. splice() 允许任意两个文件之间互相连接</span><span class="SemanticString">
+2. sendfile()只适用于文件到 socket 进行数据传输。</span></span></p></div></article>
+  <footer class="Footer">
+  <div>&copy; 夕的博客 2022</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>
